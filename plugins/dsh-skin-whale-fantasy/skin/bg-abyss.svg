@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="pit" x1="0" y1="0" x2="0.3" y2="1">
+      <stop offset="0" stop-color="#04080f"/>
+      <stop offset="0.45" stop-color="#05070d"/>
+      <stop offset="1" stop-color="#020407"/>
+    </linearGradient>
+    <radialGradient id="sonar" cx="0.5" cy="0.66" r="0.62">
+      <stop offset="0" stop-color="#39ffd1" stop-opacity="0.16"/>
+      <stop offset="0.42" stop-color="#3a7bff" stop-opacity="0.08"/>
+      <stop offset="1" stop-color="#3a7bff" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="spire" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#39ffd1" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#39ffd1" stop-opacity="0.13"/>
+      <stop offset="1" stop-color="#39ffd1" stop-opacity="0"/>
+    </linearGradient>
+    <pattern id="mesh" width="64" height="64" patternUnits="userSpaceOnUse">
+      <path d="M0 64L64 0" fill="none" stroke="#1e3a6b" stroke-opacity="0.4" stroke-width="1"/>
+    </pattern>
+    <mask id="vanish">
+      <radialGradient id="vanishG" cx="0.5" cy="0.62" r="0.8">
+        <stop offset="0" stop-color="#fff" stop-opacity="0.85"/>
+        <stop offset="0.62" stop-color="#fff" stop-opacity="0.2"/>
+        <stop offset="1" stop-color="#000" stop-opacity="0"/>
+      </radialGradient>
+      <rect width="1600" height="1000" fill="url(#vanishG)"/>
+    </mask>
+  </defs>
+
+  <rect width="1600" height="1000" fill="url(#pit)"/>
+  <rect width="1600" height="1000" fill="url(#sonar)"/>
+  <rect width="1600" height="1000" fill="url(#mesh)" mask="url(#vanish)" opacity="0.4"/>
+
+  <!-- 声纳环：以画面中下方为源，三层同心弧 -->
+  <g fill="none" stroke="#39ffd1">
+    <ellipse cx="800" cy="700" rx="300" ry="118" stroke-opacity="0.16" stroke-width="1.5"/>
+    <ellipse cx="800" cy="700" rx="520" ry="204" stroke-opacity="0.1" stroke-width="1.5"/>
+    <ellipse cx="800" cy="700" rx="760" ry="298" stroke-opacity="0.06" stroke-width="1.5"/>
+  </g>
+
+  <!-- 光柱：从深处透上来的三条，靠 mask 掐掉边缘 -->
+  <g mask="url(#vanish)">
+    <path d="M560 1000L700 240h34l84 760z" fill="url(#spire)" opacity="0.7"/>
+    <path d="M980 1000L1060 400h22l58 600z" fill="url(#spire)" opacity="0.45"/>
+    <path d="M300 1000L360 560h16l40 440z" fill="url(#spire)" opacity="0.3"/>
+  </g>
+
+  <!-- 沉底的鲸骨线：只留几何味 -->
+  <g fill="none" stroke="#3a7bff" stroke-opacity="0.14" stroke-width="1.5">
+    <path d="M80 900h260l40-26h180l40 26h300"/>
+    <path d="M180 874v52M420 874v52M700 874v52M900 874v52"/>
+  </g>
+
+  <g fill="#e8f1ff">
+    <circle cx="212" cy="132" r="1.4" opacity="0.34"/>
+    <circle cx="742" cy="96" r="1.2" opacity="0.26"/>
+    <circle cx="1284" cy="188" r="1.6" opacity="0.4"/>
+    <circle cx="1520" cy="520" r="1.3" opacity="0.2"/>
+    <circle cx="96" cy="640" r="1.2" opacity="0.18"/>
+  </g>
+  <circle cx="1180" cy="146" r="1.8" fill="#39ffd1" opacity="0.4"/>
+</svg>

@@ -1,0 +1,39 @@
+# 桌宠插件：把 github.com/MerZlin/dsh-pet-indesktop（大肥鱼 · DSH）接成 Laji 的桌宠。
+#
+# 分工：
+#   进程  —— 本清单的 `[[contributions.apps]]`，由 Laji 主进程托管（装了就起，禁用/卸载即停）。
+#   状态  —— 宿主的 pet-dsh 模块按上游 `agent-event/v1` 契约写 `pet-link/laji.jsonl`，
+#            桌宠内置的 `laji` 通道只读 tail 这个文件来切动画。
+#
+# 两条 app 条目的命令都是 "环境变量占位"：对应变量未设时命令展开为空，
+# 宿主会跳过该条（不会报错、不会双开）。装了多个就自行保证只设其中一个。
+#
+#   LAJI_DSH_PET_PYTHON → 本仓源码运行（workdir 指向 `${plugin}/src`，`pythonw.exe -m pet`）；
+#   LAJI_DSH_PET_EXE    → 便携/打包版单文件 exe（如上游 349MB 发行包解出的 `dsh-pet.exe`）。
+#
+# 上游 exe 没有内置 `laji` 通道，靠宿主写入 `agent_link.custom_agents` 那条登记；
+# 本仓源码（及后续自打包产物）用内置通道，不再依赖写用户的 config.json。
+
+[plugin]
+id = "com.nerve.dsh-pet"
+name = "大肥鱼桌宠（DSH）"
+version = "1.0.0"
+min_laji = "0.1.0"
+description = "桌面常驻的桌宠形象：随对话进展切换动作和气泡，正在处理、等待确认、报错、空闲都能一眼看到。"
+
+[permissions]
+network = []
+
+[[contributions.apps]]
+id = "dsh-pet"
+name = "DSH 桌宠"
+command = "${env:LAJI_DSH_PET_EXE}"
+autostart = true
+
+[[contributions.apps]]
+id = "dsh-pet-src"
+name = "DSH 桌宠（源码）"
+command = "${env:LAJI_DSH_PET_PYTHON}"
+args = ["-m", "pet"]
+workdir = "${plugin}/src"
+autostart = true

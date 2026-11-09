@@ -1,0 +1,306 @@
+/* ==========================================================================
+   Laji 皮肤包 · whale-fantasy（鲸落 · 未至之境）
+   --------------------------------------------------------------------------
+   作用域：:root[data-workbench-skin="whale-fantasy"]
+   变体：abyss（电光蓝，默认）/ mint / nebula / coral
+
+   取色来自上游 whale-fantasy 的公开色板（CC BY-NC-SA 4.0，仅取配色与质感）
+   画布 #05070D · 结构层 #0A1020 / #142847 / #183059 · 结构线 #1E3A6B
+   电光 #3A7BFF · 生物光 #39FFD1 · 正文 #E8F1FF · 次级 #8FA8CC
+   来源：https://github.com/zhu1090093659/dsh-skins （skins/whale-fantasy）
+
+   设计取舍：
+   - 底色固定为深蓝黑，四个变体只换电光色相。换 hue 若连底色一起走，
+     粉色变体就成了"粉汤夜海"，丢掉鲸落的水压感。
+   - 深色下的"清透"来自三件事：低饱和底、够亮的正文、1px 发光细边。
+     不靠大面磨砂，所以正文滚动区不叠合成层。
+   - 全站只在悬浮层（卡片 / 弹窗 / 气泡）用 backdrop-filter。
+   ========================================================================== */
+
+/* --- 1. 深海调色板 ------------------------------------------------------- */
+
+:root[data-workbench-skin="whale-fantasy"] {
+  color-scheme: dark;
+
+  /* 四变体的唯一开关：电光色相 + 副光色相 */
+  --wf-h: 222;
+  --wf-h2: 168;
+  --wf-s: 100%;
+  --wf-l: 62%;
+
+  /* 深海底色：不随变体变 */
+  --wf-abyss: #05070d;
+  --wf-deep: #0a1020;
+  --wf-deep-2: #142847;
+  --wf-deep-3: #183059;
+  --wf-line: #1e3a6b;
+  --wf-line-soft: #1e3a6b73;
+  --wf-hair: #1e3a6b4d;
+  --wf-ink: #e8f1ff;
+  --wf-ink-dim: #8fa8cc;
+  --wf-ink-faint: #6e82a1;
+  --wf-ink-ghost: #4a5973;
+
+  /* 电光（随变体）/ 生物光（固定薄荷，四个变体里都当第二强调） */
+  --wf-accent: hsl(var(--wf-h) var(--wf-s) var(--wf-l));
+  --wf-accent-hot: hsl(var(--wf-h) 100% 74%);
+  --wf-accent-deep: hsl(var(--wf-h) 88% 48%);
+  --wf-glow: hsl(var(--wf-h) 100% 62% / 0.34);
+  --wf-glow-soft: hsl(var(--wf-h) 100% 62% / 0.13);
+  --wf-glow-hair: hsl(var(--wf-h) 100% 70% / 0.5);
+  --wf-bio: #39ffd1;
+  --wf-bio-soft: #39ffd129;
+
+  /* 状态色：沿用上游色板，深底上的对比已经调过 */
+  --wf-ok: #4fe0b0;
+  --wf-warn: #ffd27a;
+  --wf-danger: #ff6e8a;
+
+  /* 玻璃与投影 */
+  --wf-glass: #0a1020c7;
+  --wf-glass-solid: #0d1426f2;
+  --wf-glass-thin: #1428478f;
+  --wf-shadow-1: 0 1px 2px #00000073;
+  --wf-shadow-2: 0 4px 14px #00000080;
+  --wf-shadow-3: 0 16px 38px #0000008c;
+
+  --wf-font-display: Bahnschrift, DengXian, "Segoe UI Variable Display", "Microsoft YaHei UI", system-ui,
+    sans-serif;
+}
+
+/* --- 2. 四个变体：只换电光色相 ------------------------------------------- */
+
+/* 默认变体也显式写一遍：base 里的 222 是兜底值，两边各写一处才能被测试盯住漂移。 */
+:root[data-workbench-skin="whale-fantasy"][data-skin-accent="abyss"] {
+  --wf-h: 222;
+  --wf-h2: 168;
+}
+
+:root[data-workbench-skin="whale-fantasy"][data-skin-accent="mint"] {
+  --wf-h: 168;
+  --wf-h2: 222;
+}
+
+:root[data-workbench-skin="whale-fantasy"][data-skin-accent="nebula"] {
+  --wf-h: 264;
+  --wf-h2: 200;
+}
+
+:root[data-workbench-skin="whale-fantasy"][data-skin-accent="coral"] {
+  --wf-h: 340;
+  --wf-h2: 196;
+}
+
+/* --- 3. 语义变量映射：整站换色的真正开关 --------------------------------- */
+
+:root[data-workbench-skin="whale-fantasy"] {
+  --laji-editor-background: var(--wf-abyss);
+  --laji-sideBar-background: var(--wf-deep);
+  --laji-panel-background: var(--wf-glass-solid);
+  --laji-editorWidget-background: var(--wf-glass-solid);
+  --laji-dropdown-background: var(--wf-glass-solid);
+  --laji-terminal-background: var(--wf-abyss);
+  --laji-editorGroupHeader-tabsBackground: var(--wf-deep);
+  --laji-textCodeBlock-background: #14284794;
+  --laji-textBlockQuote-background: var(--wf-glow-soft);
+
+  --laji-foreground: var(--wf-ink);
+  --laji-input-foreground: var(--wf-ink);
+  --laji-terminal-foreground: var(--wf-ink);
+  --laji-descriptionForeground: var(--wf-ink-dim);
+  --laji-input-placeholderForeground: var(--wf-ink-faint);
+
+  --laji-widget-border: var(--wf-line);
+  --laji-panel-border: var(--wf-line);
+  --laji-input-border: var(--wf-line);
+  --laji-dropdown-border: var(--wf-line);
+
+  --laji-focusBorder: var(--wf-accent);
+  --laji-button-background: var(--wf-accent);
+  --laji-button-hoverBackground: var(--wf-accent-hot);
+  --laji-button-foreground: var(--wf-deep);
+  --laji-button-secondaryBackground: var(--wf-glow-soft);
+  --laji-button-secondaryForeground: var(--wf-accent-hot);
+  --laji-button-secondaryHoverBackground: hsl(var(--wf-h) 100% 62% / 0.22);
+  --laji-inputOption-activeBackground: var(--wf-accent);
+  --laji-textLink-foreground: var(--wf-accent-hot);
+  --laji-list-hoverBackground: var(--wf-deep-2);
+  --laji-list-activeSelectionBackground: hsl(var(--wf-h) 100% 62% / 0.18);
+  --laji-list-inactiveSelectionBackground: hsl(var(--wf-h) 100% 62% / 0.1);
+  --laji-toolbar-hoverBackground: var(--wf-deep-2);
+  --laji-badge-background: var(--wf-glow-soft);
+  --laji-badge-foreground: var(--wf-accent-hot);
+
+  --laji-errorForeground: var(--wf-danger);
+  --laji-editorWarning-foreground: var(--wf-warn);
+  --laji-testing-iconPassed: var(--wf-ok);
+  --laji-gitDecoration-addedResourceForeground: var(--wf-ok);
+  --laji-gitDecoration-deletedResourceForeground: var(--wf-danger);
+
+  --nd-bg: var(--wf-abyss);
+  --nd-surface: var(--wf-deep);
+  --nd-surface-2: var(--wf-deep-2);
+  --nd-border: var(--wf-line);
+  --nd-accent: var(--wf-accent);
+  --nd-accent-soft: var(--wf-glow-soft);
+  --nd-ok: var(--wf-ok);
+  --nd-warn: var(--wf-warn);
+  --nd-error: var(--wf-danger);
+  --nd-running: var(--wf-accent-hot);
+  --nd-shadow: var(--wf-shadow-2);
+}
+
+/* 设置页色块：走 app.css 的 --sw-* 契约，必须带本皮肤作用域，
+   否则 data-accent 是全局属性，会被别的皮肤同名色块接走。 */
+:root[data-workbench-skin="whale-fantasy"] .nd-skin-accent[data-accent="abyss"] {
+  --sw-bg: #0a1020;
+  --sw-fg: #e8f1ff;
+  --sw-accent: #3a7bff;
+}
+
+:root[data-workbench-skin="whale-fantasy"] .nd-skin-accent[data-accent="mint"] {
+  --sw-bg: #062025;
+  --sw-fg: #e8f1ff;
+  --sw-accent: #39ffd1;
+}
+
+:root[data-workbench-skin="whale-fantasy"] .nd-skin-accent[data-accent="nebula"] {
+  --sw-bg: #100a24;
+  --sw-fg: #e8f1ff;
+  --sw-accent: #9b7bff;
+}
+
+:root[data-workbench-skin="whale-fantasy"] .nd-skin-accent[data-accent="coral"] {
+  --sw-bg: #220c16;
+  --sw-fg: #ffe8ee;
+  --sw-accent: #ff7ea8;
+}
+
+/* --- 4. 深海背景：光晕 + 全息网格 ---------------------------------------- */
+
+/* 固定层，pointer-events 关掉，不参与布局；合成层，不随内容重绘。 */
+:root[data-workbench-skin="whale-fantasy"] body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(46% 38% at 8% -6%, hsl(var(--wf-h) 100% 62% / 0.22), transparent 68%),
+    radial-gradient(40% 34% at 96% 4%, hsl(var(--wf-h2) 100% 62% / 0.16), transparent 70%),
+    radial-gradient(64% 46% at 50% 112%, hsl(var(--wf-h) 100% 58% / 0.18), transparent 72%),
+    linear-gradient(180deg, #05070d 0%, #070c18 52%, #05070d 100%);
+}
+
+/* 48px 一格的 1px 全息网格：中心淡出，只在页脚与四角留痕，避免整页碎掉。 */
+:root[data-workbench-skin="whale-fantasy"] body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.28;
+  background-image:
+    linear-gradient(to right, var(--wf-hair) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--wf-hair) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(120% 90% at 50% 42%, #000 0%, #000 38%, transparent 86%);
+}
+
+/* --- 5. 醒目分隔：要做决定的地方加发光色带 ------------------------------- */
+
+:root[data-workbench-skin="whale-fantasy"] .nd-settings-card,
+:root[data-workbench-skin="whale-fantasy"] .nd-model-card {
+  position: relative;
+  border: 1px solid var(--wf-line);
+  background: var(--wf-glass);
+  box-shadow: var(--wf-shadow-2), inset 0 0 0 1px hsl(var(--wf-h) 100% 62% / 0.06);
+  overflow: hidden;
+  backdrop-filter: blur(14px) saturate(1.3);
+}
+
+:root[data-workbench-skin="whale-fantasy"] .nd-settings-card::before,
+:root[data-workbench-skin="whale-fantasy"] .nd-model-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: linear-gradient(180deg, var(--wf-accent-hot), var(--wf-bio));
+  box-shadow: 0 0 14px var(--wf-glow);
+}
+
+/* 悬浮：色带加宽 + 边框转电光，避免只靠文字变色判断选中 */
+:root[data-workbench-skin="whale-fantasy"] .nd-settings-card:hover,
+:root[data-workbench-skin="whale-fantasy"] .nd-model-card:hover {
+  border-color: var(--wf-accent);
+  box-shadow: var(--wf-shadow-3), inset 0 0 0 1px hsl(var(--wf-h) 100% 62% / 0.14);
+}
+
+:root[data-workbench-skin="whale-fantasy"] .nd-settings-card:hover::before,
+:root[data-workbench-skin="whale-fantasy"] .nd-model-card:hover::before {
+  width: 4px;
+}
+
+/* --- 6. 悬浮反馈：指针划过的地方亮 1px 边 + 极短电光 --------------------- */
+
+:root[data-workbench-skin="whale-fantasy"] .nd-strip-btn:hover:not(:disabled),
+:root[data-workbench-skin="whale-fantasy"] .nd-dock-row:hover,
+:root[data-workbench-skin="whale-fantasy"] .nd-tree-row:hover,
+:root[data-workbench-skin="whale-fantasy"] .nd-session-row:hover,
+:root[data-workbench-skin="whale-fantasy"] .nd-space-row:hover,
+:root[data-workbench-skin="whale-fantasy"] .nd-item:hover {
+  background-color: hsl(var(--wf-h) 100% 62% / 0.09);
+  box-shadow: inset 0 0 0 1px var(--wf-hair);
+}
+
+/* --- 7. 玻璃质感：只给会浮在内容之上的层 --------------------------------- */
+
+:root[data-workbench-skin="whale-fantasy"] .nd-dialog,
+:root[data-workbench-skin="whale-fantasy"] .nd-panel {
+  border: 1px solid var(--wf-line);
+  box-shadow: var(--wf-shadow-3);
+  backdrop-filter: blur(16px) saturate(1.25);
+}
+
+/* --- 8. 字重与字面：深底上细字会发飘，标题给一档 ------------------------- */
+
+:root[data-workbench-skin="whale-fantasy"] .nd-topbar-title {
+  font-family: var(--wf-font-display);
+  font-weight: 650;
+  letter-spacing: 0.01em;
+}
+
+/* --- 9. 公仔与宠物层：气泡、托盘、宠物气泡都跟前皮肤走 ------------------- */
+
+:root[data-workbench-skin="whale-fantasy"] .nd-mascot__bubble {
+  max-width: 200px;
+  line-height: 1.45;
+  background: var(--wf-glass-solid);
+  border: 1px solid var(--wf-line);
+  color: var(--wf-ink);
+  box-shadow: var(--wf-shadow-2), 0 0 18px var(--wf-glow-soft);
+  backdrop-filter: blur(10px) saturate(1.3);
+}
+
+:root[data-workbench-skin="whale-fantasy"] .nd-mascot-tray__btn,
+:root[data-workbench-skin="whale-fantasy"] .nd-mascot-tray__panel {
+  background: var(--wf-glass-solid);
+  border-color: var(--wf-line);
+  box-shadow: var(--wf-shadow-2);
+  backdrop-filter: blur(12px) saturate(1.3);
+}
+
+/* 宠物气泡是"提醒"，公仔气泡是台词：用生物光左边线 + 更紧的宽度拉开区别 */
+:root[data-workbench-skin="whale-fantasy"] .nd-pet__bubble {
+  max-width: 208px;
+  background: var(--wf-glass-solid);
+  border: 1px solid var(--wf-line);
+  border-left: 3px solid var(--wf-bio);
+  color: var(--wf-ink);
+  box-shadow: var(--wf-shadow-3), inset 0 0 18px var(--wf-bio-soft);
+  backdrop-filter: blur(10px) saturate(1.3);
+}
+
+:root[data-workbench-skin="whale-fantasy"] .nd-pet__art {
+  filter: drop-shadow(0 6px 14px var(--wf-glow));
+}

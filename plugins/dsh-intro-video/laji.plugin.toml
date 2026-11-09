@@ -1,0 +1,21 @@
+# 深海启动动画：把启动时的全屏视频做成可装可卸的插件。
+#
+# 视频本体是应用构建产物（`dist/splash/intro.html` + 同目录媒体），这里的清单
+# 只声明「装上它就播启动动画」：装 = 每次启动先播，卸载 = 直接进主界面。
+#
+# 装在创意工坊的「市场」里，默认已安装（首次启动自动播种，见 PluginStore.ensureBundledIntro），
+# 所以升级后的行为不变；卸载过一次之后就不会再自动装回来。
+
+[plugin]
+id = "com.nerve.dsh-intro-video"
+name = "深海启动动画"
+version = "1.0.0"
+min_laji = "0.1.0"
+description = "每次启动先播一段全屏深海动画，可随时按 Esc 跳过；卸载后直接进主界面。"
+
+[permissions]
+network = []
+
+[[contributions.intro]]
+id = "boot-video"
+title = "深海启动动画"

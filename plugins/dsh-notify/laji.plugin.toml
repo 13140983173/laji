@@ -1,0 +1,35 @@
+# 消息通知：把「不处理就跑不下去」的事件推到手机 / 邮箱 / 企微。
+#
+# 结构分两半，和 dsh-whale-widget 一致：
+#   浏览器半（lib/client.js）—— 设置面板 + 事件过滤，走 `ctx.events` 收宿主事件；
+#   服务端半（lib/host.mjs）—— 真正发短信 / 邮件 / 企微，配置与凭据只存在插件目录。
+#
+# 为什么要服务端半：渲染层的 CSP 不放行回环 http，也不该碰 SMTP 和签名密钥；
+# host 进程由宿主按 `${node}` 起，装了就起、禁用/卸载即停。
+#
+# 网络白名单只列默认的官方端点；邮件走用户自己填的 SMTP 主机（host 进程里直连，
+# 不经过渲染层 CSP）。企微 / 阿里云短信的域名必须在 permissions 里，否则装的时候
+# 市场卡片会显示权限清单对不上。
+
+[plugin]
+id = "com.nerve.dsh-notify"
+name = "消息通知"
+version = "0.1.1"
+min_laji = "0.1.0"
+description = "审批、提问、错误、计划事件推送到短信 / 邮件 / 企业微信；装完在活动栏底的插件中心里多一条，点开右侧就是这块设置面板。"
+
+[permissions]
+network = ["qyapi.weixin.qq.com", "dysmsapi.aliyuncs.com"]
+
+[[contributions.workbench]]
+id = "notify"
+title = "消息通知"
+entry = "lib/client.js"
+
+[[contributions.apps]]
+id = "notify-host"
+name = "消息通知本机服务"
+command = "${node}"
+args = ["lib/host.mjs"]
+workdir = "${plugin}"
+autostart = true

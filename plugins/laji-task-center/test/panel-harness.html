@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8" />
+<title>任务中心 · 插件预览</title>
+<!--
+  直接加载插件本体（lib/client.js）的预览壳。ESM 在 file:// 下会被 CORS 挡掉，
+  所以要先起一个静态服务：
+
+    npx --yes http-server packs/plugins/laji-task-center -p 8777 -c-1
+    # 打开 http://localhost:8777/test/panel-harness.html
+
+  数据来自 test/fixtures.js（带 detail），宿主能力面用最小桩模拟：
+  ctx.runs.list 给样本，ctx.events.recent 给一条审批，点击"打开会话"在控制台打日志。
+-->
+<body style="margin:0;background:#1e1f22">
+<script src="./fixtures.js"></script>
+<script>
+  window.__ModuleLoader__ = {
+    load: function (def) {
+      var mod = def.factory();
+      var ROWS = (window.LajiTaskFixtures || {}).rows || [];
+      var EVENTS = (window.LajiTaskFixtures || {}).events || [];
+      mod.apply({
+        id: def.id,
+        events: {
+          on: function () { return function () {}; },
+          recent: function () { return EVENTS; },
+        },
+        runs: {
+          list: function () { return Promise.resolve(ROWS); },
+          open: function (p) { console.log("[harness] open", p.workspaceRoot, p.runId); },
+          dismiss: function (p) { console.log("[harness] dismiss", p); return Promise.resolve(); },
+        },
+        entries: {
+          register: function (input) {
+            input.open();
+            return { setBadge: function (n) { console.log("[harness] badge", n); }, dispose: function () {} };
+          },
+        },
+      });
+    },
+  };
+</script>
+<script type="module" src="../lib/client.js"></script>

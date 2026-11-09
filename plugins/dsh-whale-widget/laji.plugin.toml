@@ -1,0 +1,49 @@
+# 小鲸鱼记账挂件：把上游 DSH 插件接成 Laji 的界面挂件。
+#
+# 上游：https://github.com/MeteorNOX/DeepSeek-Balance-Whale-Widget（MIT，见
+# `vendor/PROVENANCE.md`、`vendor/LICENSE`）。原包是 DSH 的 cordis bundle，由
+# 两半组成，这里都保留：
+#
+#   浏览器半 —— `vendor/assets/whale-widget.js`，普通 IIFE；由 `lib/client.js`
+#               包装成 Laji 的 `__ModuleLoader__` 模块（`exports.apply`）后加载。
+#   服务端半 —— `vendor/lib/index.mjs`，只用到宿主的一小块 cordis 契约；由
+#               `lib/host.mjs` 补齐 ctx 并起一个只绑回环的 HTTP 服务。
+#
+# 数据通路：渲染层的 `/dsh-whale/*` 由 `lib/client.js` 改写成
+# `laji-plugin://<id>/__proxy/dsh-whale/*`，主进程的插件协议再代理到 host 的
+# 端口（端口写在安装目录的 `runtime.json`）。浏览器不直连回环 http —— CSP
+# 不放行，上游自带的跨站栅栏也会拒掉带 Origin 的浏览器请求。
+#
+# contributions.apps 只有一条：「装了才起、禁用/卸载即停」。
+#   command 用 `${node}` 占位 —— 主进程把它展开成宿主自带的 Node（Electron二进制 +
+#   `ELECTRON_RUN_AS_NODE=1`），因此不依赖 PATH 里的 node，也不必经过 cmd.exe。
+# 不会双开：`lib/host.mjs` 按 runtime.json 里的 pid 做单实例判断。
+#
+# 余额来自 DeepSeek 官方接口，凭据按上游的 `credentials.resolve('DEEPSEEK_API_KEY')`
+# 解析 —— 宿主主进程会把它注进子进程环境；插件自己 `set` 的凭据落在
+# `state/credentials.json`。「今日已用」依赖 DSH 的会话事件流，Laji 没有这条流，
+# 所以那一栏显示 `—`；余额、峰谷、角色、音效、设置持久化都正常。
+
+[plugin]
+id = "com.nerve.dsh-whale-widget"
+name = "小鲸鱼记账挂件（DSH）"
+version = "0.4.2"
+min_laji = "0.1.0"
+description = "界面右下角常驻的小鲸鱼挂件：DeepSeek 余额、峰谷定价、点击气泡序列（文本/余额/图片/音效）与逐行样式。"
+homepage = "https://github.com/MeteorNOX/DeepSeek-Balance-Whale-Widget"
+
+[permissions]
+network = ["api.deepseek.com", "platform.deepseek.com"]
+
+[[contributions.workbench]]
+id = "whale-widget"
+title = "小鲸鱼记账挂件"
+entry = "lib/client.js"
+
+[[contributions.apps]]
+id = "whale-host"
+name = "小鲸鱼挂件本机服务"
+command = "${node}"
+args = ["lib/host.mjs"]
+workdir = "${plugin}"
+autostart = true

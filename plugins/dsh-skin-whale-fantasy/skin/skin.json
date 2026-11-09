@@ -1,0 +1,29 @@
+{
+  "id": "whale-fantasy",
+  "name": "鲸落 · 未至之境",
+  "description": "深空电光·全息线框皮肤包（电光蓝 / 薄荷青 / 星紫 / 珊瑚粉）",
+  "accents": [
+    "abyss",
+    "mint",
+    "nebula",
+    "coral"
+  ],
+  "defaultAccent": "abyss",
+  "accentColors": {
+    "abyss": "#3a7bff",
+    "mint": "#39ffd1",
+    "nebula": "#9b7bff",
+    "coral": "#ff7ea8"
+  },
+  "theme": "dark",
+  "chrome": {
+    "color": "#05070d",
+    "symbolColor": "#8fa8cc"
+  },
+  "backgrounds": [
+    "bg-deep.svg",
+    "bg-abyss.svg"
+  ],
+  "defaultBackground": "bg-deep.svg",
+  "preview": "preview.svg"
+}

@@ -1,0 +1,21 @@
+# 构建产物：不进仓库，进 GitHub Release
+**/bin/
+**/bin-next/
+**/dist-onedir/
+**/.build*/
+**/*.exe
+**/*.zip
+**/*.dmg
+
+# Python / Node 缓存
+__pycache__/
+*.pyc
+.venv/
+node_modules/
+.pytest_cache/
+.ruff_cache/
+.scratch/
+
+# 大体积素材：由 Release 附件下发，见 README「素材策略」
+plugins/dsh-pet/src/assets/
+plugins/aboutme-pets/characters/

@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96" class="wfmg-whale" role="img" aria-label="鲸鱼娘">
+  <defs>
+    <linearGradient id="wfmg-body" x1="0.2" y1="0" x2="0.8" y2="1">
+      <stop offset="0" stop-color="#2a4b86"/>
+      <stop offset="0.55" stop-color="#183059"/>
+      <stop offset="1" stop-color="#0e1a30"/>
+    </linearGradient>
+    <linearGradient id="wfmg-belly" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e8f1ff" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#8fa8cc" stop-opacity="0.12"/>
+    </linearGradient>
+    <radialGradient id="wfmg-halo" cx="0.5" cy="0.55" r="0.5">
+      <stop offset="0" stop-color="#3a7bff" stop-opacity="0.4"/>
+      <stop offset="1" stop-color="#3a7bff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <style>
+    @keyframes wfmg-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-2.5px); } }
+    @keyframes wfmg-tail { 0%, 100% { transform: rotate(-5deg); } 50% { transform: rotate(7deg); } }
+    @keyframes wfmg-spout { 0%, 100% { opacity: 0.25; transform: translateY(0); } 50% { opacity: 0.95; transform: translateY(-2px); } }
+    @keyframes wfmg-bubble { 0% { opacity: 0; transform: translateY(4px); } 40% { opacity: 0.85; } 100% { opacity: 0; transform: translateY(-10px); } }
+    .wfmg-whale .wfmg-body { animation: wfmg-float 3.6s ease-in-out infinite; }
+    .wfmg-whale .wfmg-tail { transform-origin: 24px 62px; animation: wfmg-tail 2.6s ease-in-out infinite; }
+    .wfmg-whale .wfmg-spout { transform-origin: 50px 28px; animation: wfmg-spout 2.2s ease-in-out infinite; }
+    .wfmg-whale .wfmg-b1 { animation: wfmg-bubble 3s ease-in-out infinite; }
+    .wfmg-whale .wfmg-b2 { animation: wfmg-bubble 3s ease-in-out 0.9s infinite; }
+    .wfmg-whale .wfmg-b3 { animation: wfmg-bubble 3s ease-in-out 1.8s infinite; }
+    @media (prefers-reduced-motion: reduce) { .wfmg-whale * { animation: none !important; } }
+  </style>
+
+  <circle cx="48" cy="56" r="34" fill="url(#wfmg-halo)"/>
+
+  <g class="wfmg-body">
+    <!-- 尾鳍 -->
+    <g class="wfmg-tail">
+      <path d="M26 62c-6-2-10-7-12-13 5 2 10 3 15 2-2 4-3 8-3 11z"
+            fill="url(#wfmg-body)" stroke="#3a7bff" stroke-opacity="0.7" stroke-width="1.4" stroke-linejoin="round"/>
+    </g>
+
+    <!-- 身体 -->
+    <ellipse cx="50" cy="56" rx="28" ry="23.5" fill="url(#wfmg-body)" stroke="#3a7bff" stroke-opacity="0.8" stroke-width="1.6"/>
+    <!-- 肚皮 -->
+    <ellipse cx="50" cy="67" rx="19" ry="11" fill="url(#wfmg-belly)"/>
+
+    <!-- 头顶小鳍 -->
+    <path d="M50 34c-3-5-3-10 0-14 3 4 3 9 0 14z" fill="#39ffd1" fill-opacity="0.5"/>
+    <!-- 喷水 -->
+    <g class="wfmg-spout" fill="none" stroke="#39ffd1" stroke-opacity="0.8" stroke-width="1.5" stroke-linecap="round">
+      <path d="M50 30c0-4-3-6-6-7"/>
+      <path d="M50 30c0-4 3-6 6-7"/>
+    </g>
+
+    <!-- 眼睛 -->
+    <ellipse cx="41" cy="53" rx="4.6" ry="5.2" fill="#e8f1ff"/>
+    <ellipse cx="59" cy="53" rx="4.6" ry="5.2" fill="#e8f1ff"/>
+    <circle cx="41.6" cy="53.8" r="2.5" fill="#0a1020"/>
+    <circle cx="59.6" cy="53.8" r="2.5" fill="#0a1020"/>
+    <circle cx="42.7" cy="52.2" r="0.95" fill="#ffffff"/>
+    <circle cx="60.7" cy="52.2" r="0.95" fill="#ffffff"/>
+
+    <!-- 腮红 -->
+    <ellipse cx="33" cy="61" rx="4.4" ry="2.6" fill="#ff7ea8" fill-opacity="0.45"/>
+    <ellipse cx="67" cy="61" rx="4.4" ry="2.6" fill="#ff7ea8" fill-opacity="0.45"/>
+
+    <!-- 嘴 -->
+    <path d="M47 61.5c1.7 2 4.3 2 6 0" fill="none" stroke="#8fa8cc" stroke-opacity="0.9" stroke-width="1.4" stroke-linecap="round"/>
+  </g>
+
+  <!-- 生物光气泡 -->
+  <g fill="#39ffd1">
+    <circle class="wfmg-b1" cx="30" cy="30" r="2.1" fill-opacity="0.6"/>
+    <circle class="wfmg-b2" cx="67" cy="24" r="1.6" fill-opacity="0.5"/>
+    <circle class="wfmg-b3" cx="23" cy="41" r="1.3" fill-opacity="0.4"/>
+  </g>
+</svg>

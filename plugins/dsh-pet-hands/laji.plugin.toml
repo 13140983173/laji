@@ -1,0 +1,56 @@
+# 伙伴的手：让桌宠真的能看屏幕、点按钮、打字。
+#
+# 它做两件事：
+#   1. `[[contributions.mcp]]` —— 给模型 5 个工具（look / act / run_steps / screen / raw），
+#      把 cua-driver 那套 60 多个工具的 MCP 收敛成模型一看就懂的几个动词。
+#   2. `[[contributions.skills]]` —— 一份说明「什么时候该动手、什么时候该先说」的技能，
+#      装到全局技能目录，按需加载，不常驻 prompt。
+#
+# 为什么中间要加一层 server.py，而不是直接把 `cua-driver mcp` 挂进来：
+#   * schema 体积。那边 60+ 工具每轮都在 system prompt 里；这里 5 个。
+#   * 截图。那边 base64 内联返回（1440x900 一张按 Laji 的估算就是 1728 token），
+#     动辄几万；这里一律落盘成 PNG 只回路径。
+#   * 词汇。模型不该先学会 `get_window_state` / `element_token` 才敢动手。
+#   * 权限。五个动词就是全部攻击面，没有「录制宏」那种口子。
+#
+# 依赖装不上就没工具可用，所以这里只写死最小前提：本机有 cua-driver，
+# 且 `cua-driver status` 是 running（`cua-driver autostart enable` 一次即可）。
+# 但那是「用户自己搞定」；声明成依赖以后，安装时宿主会自己把它备到位。
+
+[plugin]
+id = "com.nerve.dsh-pet-hands"
+name = "伙伴的手（Pet Hands）"
+version = "0.1.0"
+min_laji = "0.1.0"
+description = "让桌宠看得见你的屏幕并动手：读窗口控件树、点按钮、输入文字；动之前先说一句。"
+
+[permissions]
+# cua-driver 是本机进程，走它自己的 daemon 与本机 socket，不需要网络权限。
+network = []
+
+# 安装前置。故意只写宿主认得的 id，不写 URL / 版本 / 安装命令：
+# 那三项一旦能由插件提供，装一个插件就等于让它执行任意远端脚本。
+[[dependencies]]
+id = "python"
+required = true
+
+[[dependencies]]
+id = "cua-driver"
+required = true
+
+[[contributions.mcp]]
+name = "pet-hands"
+transport = "stdio"
+# `${python}` 由宿主展开成插件 venv（没有则系统 Python）。本 server 只用标准库，
+# 所以不需要 requirements.txt，也不需要建 venv。
+# 解释器缺失时宿主会当场报“没有找到 Python 3”，而不是把裸 `python` 交给
+# spawn 去碰运气（那样只会得到一句 `program not found`）。
+command = "${python}"
+args = ["${plugin}/server.py"]
+# PET_HANDS_SHOT_DIR 必须落在她自己的工作区内：read_file 只能读工作区里的文件，
+# 截图默认存在 %LOCALAPPDATA%\laji\pet-hands\shots，她根本打不开，"看屏幕"就等于没开。
+# 宠物工作区固定是 %APPDATA%\Laji Agent\Pet\shenshen，${APPDATA} 由宿主展开。
+env = { PYTHONUNBUFFERED = "1", PYTHONIOENCODING = "utf-8", PET_HANDS_SHOT_DIR = "${APPDATA}/Laji Agent/Pet/shenshen/.laji/shots" }
+
+[[contributions.skills]]
+path = "skills/pet-hands/SKILL.md"

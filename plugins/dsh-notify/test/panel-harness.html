@@ -1,0 +1,186 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      :root {
+        --laji-foreground: #d4d4d4;
+        --laji-descriptionForeground: #9d9d9d;
+        --laji-editor-background: #1e1e1e;
+        --laji-editorWidget-background: #252526;
+        --laji-sideBar-background: #181818;
+        --laji-panel-border: #2b2b2b;
+        --laji-widget-border: #3a3a3a;
+        --laji-input-background: #2a2a2a;
+        --laji-input-border: #3c3c3c;
+        --laji-input-foreground: #e6e6e6;
+        --laji-toolbar-hoverBackground: rgba(128, 128, 128, 0.22);
+        --laji-font-family: "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
+        --laji-editor-font-family: Consolas, "Cascadia Mono", monospace;
+      }
+      body {
+        margin: 0;
+        height: 100vh;
+        background: #1e1e1e;
+        color: #6b6b6b;
+        font-family: var(--laji-font-family);
+        font-size: 13px;
+      }
+      .bg {
+        padding: 18px 22px;
+      }
+      .bg h3 {
+        margin: 0 0 6px;
+        font-size: 13px;
+        color: #8a8a8a;
+        font-weight: 500;
+      }
+      .bg p {
+        margin: 0;
+        font-size: 12px;
+        line-height: 1.7;
+      }
+      .fake-input {
+        margin-top: 14px;
+        height: 60px;
+        border: 1px solid #333;
+        border-radius: 8px;
+        padding: 8px 10px;
+        font-size: 12px;
+        color: #5f5f5f;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg">
+      <h3># 支付模块重构</h3>
+      <p>工作台背景（截图用占位）：入口在右缘栏的插件托盘里，点开是这块设置面板。</p>
+      <div class="fake-input">输入框占位……</div>
+    </div>
+    <script>
+      window.__ModuleLoader__ = {
+        load: function (mod) {
+          window.__pluginMod = mod;
+        },
+      };
+    </script>
+    <script src="../lib/client.js"></script>
+    <script>
+      const PROXY = "laji-plugin://com.nerve.dsh-notify/__proxy/";
+      const port = new URLSearchParams(location.search).get("port");
+      const realFetch = window.fetch.bind(window);
+      window.fetch = function (url, options) {
+        var target = String(url).replace(PROXY, "http://127.0.0.1:" + port + "/");
+        console.log("[fetch] " + target);
+        return realFetch(target, options).then(
+          function (res) {
+            console.log("[fetch] " + target + " -> " + res.status);
+            return res;
+          },
+          function (err) {
+            console.log("[fetch] " + target + " FAILED " + err.message);
+            throw err;
+          },
+        );
+      };
+
+      let handler = null;
+      // 宿主把插件入口画在右缘栏里，所以这里只需要一份 register 的桩：记下入口，
+      // 由 `window.__openPanel()` 代替原来点铃铛那一下。
+      const entry = { label: "", icon: "", open: null };
+      const ctx = {
+        id: "com.nerve.dsh-notify",
+        events: {
+          on: function (kind, fn) {
+            handler = fn;
+            return function () {
+              handler = null;
+            };
+          },
+          recent: function () {
+            return [];
+          },
+        },
+        entries: {
+          register: function (input) {
+            entry.label = input.label;
+            entry.icon = input.icon;
+            entry.open = input.open;
+            window.__badge = 0;
+            return {
+              setBadge: function (n) {
+                window.__badge = n;
+              },
+              dispose: function () {
+                entry.open = null;
+              },
+            };
+          },
+        },
+      };
+      window.__entry = entry;
+      window.__openPanel = function () {
+        if (entry.open) entry.open();
+      };
+      const exports = window.__pluginMod.factory(function () {
+        return {};
+      });
+      window.__unload = exports.apply(ctx);
+      window.__emit = function (event) {
+        if (handler) handler(event);
+      };
+
+      window.__setup = async function () {
+        try {
+          console.log("[setup] start");
+          await new Promise((r) => setTimeout(r, 900));
+          const first = await (await fetch(PROXY + "config")).json();
+          console.log("[setup] got config");
+        const cfg = first.config;
+        cfg.channels.wecom.on = true;
+        cfg.channels.wecom.webhook = "https://127.0.0.1:1/hook";
+        cfg.channels.mail.on = true;
+        cfg.channels.mail.host = "smtp.example.com";
+        cfg.channels.mail.from = "laji@example.com";
+        cfg.channels.mail.to = ["me@example.com"];
+        cfg.policy.onlyUnfocused = false;
+        await fetch(PROXY + "config", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify(cfg),
+        });
+        window.__openPanel();
+        await new Promise((r) => setTimeout(r, 700));
+        window.__emit({
+          kind: "approval",
+          at: Date.now(),
+          runId: "r1",
+          callId: "c1",
+          title: "需要你授权 Bash：npm run build",
+          detail: "在 支付模块 里执行构建",
+          sessionTitle: "支付模块重构",
+        });
+        window.__emit({
+          kind: "error",
+          at: Date.now(),
+          runId: "r2",
+          callId: "c2",
+          title: "工具调用失败：Edit",
+          detail: "文件被占用",
+          sessionTitle: "支付模块重构",
+        });
+          await new Promise((r) => setTimeout(r, 1200));
+          console.log("[setup] done");
+          return true;
+        } catch (err) {
+          console.log("[setup] ERROR " + (err && err.message ? err.message : err));
+          return "error";
+        }
+      };
+
+      window.__tab = function (name) {
+        document.querySelector('#dsh-notify-panel .np-tab[data-tab="' + name + '"]').click();
+      };
+    </script>
+  </body>
+</html>

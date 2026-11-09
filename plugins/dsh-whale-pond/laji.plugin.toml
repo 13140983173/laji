@@ -1,0 +1,24 @@
+# 小鲸鱼壁纸：把上游 DSH 插件接成 Laji 的视觉插件（`laji-plugin://` 客户端模块）。
+#
+# 与 `apps/laji-agent/test/fixtures/dsh-whale-pond/` 同源，`build/build.py` 从
+# `src/whale_pond.html` 生成 `lib/client.js`（服务端不参与，纯渲染层）。
+#
+# `skin` 声明是这个包的语义核心：它不是「随便装在哪张皮上都能用」的通用插件，
+# 而是「鲸池 · 深海」这张皮肤的外观层。装它 = 装这层皮并切到该皮肤；卸载时若正在
+# 用这张皮，界面回落到默认皮肤（见 renderer 的 WorkshopView）。
+
+[plugin]
+id = "com.nerve.dsh-whale-pond"
+name = "小鲸鱼壁纸（DSH）"
+version = "1.2.0"
+min_laji = "0.1.0"
+description = "把会游动的鲸鱼海铺在界面背后：鱼群、气泡、潮汐等 20 项效果实时可调。"
+
+[permissions]
+network = []
+
+[[contributions.workbench]]
+id = "whale-pond"
+title = "小鲸鱼壁纸"
+entry = "lib/client.js"
+skin = "whale-pond"

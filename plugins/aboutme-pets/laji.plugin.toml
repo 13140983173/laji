@@ -1,0 +1,19 @@
+# 桌宠素材扩展包：接入 github.com/hunmer/aboutme-pets 的角色包（aboutme 宠物商店目录）。
+#
+# 这是一个**纯素材插件**：不带进程、不注 UI。宿主安装后，桌宠插件（com.nerve.dsh-pet）
+# 的播放器会扫描兄弟插件包的 characters/ 目录（见 dsh-pet/src/pet/catalog.py
+# external_character_dirs 第 4 优先级），右键菜单即可切换这些角色。
+#
+# 素材形态：aboutme-pets 的透明 WebP 精灵图（640×360，8 列网格，12fps，与
+# dsh-pet 画布同源）经裁帧重编码为 VP9 alpha 透明 WebM，按 pet 播放器六分类落位。
+# 转换脚本与来源记录见 NOTICE.md。
+
+[plugin]
+id = "com.nerve.aboutme-pets"
+name = "桌宠素材扩展包（aboutme-pets）"
+version = "1.0.0"
+min_laji = "0.1.0"
+description = "给大肥鱼桌宠追加 4 套动作角色包：蓝毛小女仆·新动作包（166 动作）、GPT 批次（193）、Claude 批次（166）、Gemini 猫耳娘批次（100），共 625 个透明动作，桌宠右键菜单即可切换。"
+
+[permissions]
+network = []

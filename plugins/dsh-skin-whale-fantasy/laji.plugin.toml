@@ -1,0 +1,25 @@
+# 鲸落 · 未至之境：皮肤包 + 动态层，一起做成可装可卸的市场插件。
+#
+# 皮肤本体在 `skin/`（与 `samples/skin-packs/whale-fantasy/` 同源），安装时由
+# `PluginStore.installFromDir` 落到 `<userData>/skins/whale-fantasy/` 并切到该皮肤；
+# 卸载时连皮肤包一起删掉，界面回落到默认皮肤。
+#
+# `lib/client.js` 是动态层：极光呼吸、星尘、全息扫描线与指针视差。它只在
+# `skin = "whale-fantasy"` 生效时加载（`renderer/visual-plugins.ts` 按皮肤过滤），
+# 颜色取皮肤变量，四个配色变体自动跟随。
+
+[plugin]
+id = "com.nerve.dsh-skin-whale-fantasy"
+name = "鲸落 · 未至之境（DSH）"
+version = "1.1.0"
+min_laji = "0.1.0"
+description = "深海电光皮肤：星尘上浮、极光呼吸、全息扫描线与指针视差（电光蓝 / 薄荷青 / 星紫 / 珊瑚粉）。"
+
+[permissions]
+network = []
+
+[[contributions.workbench]]
+id = "whale-fantasy"
+title = "鲸落 · 未至之境"
+entry = "lib/client.js"
+skin = "whale-fantasy"

@@ -1,0 +1,46 @@
+# 桌宠管家：把桌宠 (xiaoxiao-zhuochong 上游) 的控制页 UI 接成 Laji 插件。
+#
+# 上游：https://github.com/yshuang722-spec/xiaoxiao-zhuochong（MIT，见 NOTICE.md）。
+# 本插件只借鉴它的管理面板视觉语言（暖米色侧边栏 / 角色卡片网格 / 奶油色卡片 /
+# 圆角开关），不搬运它的角色素材，也不复制它的代码；素材归各自的授权管。
+#
+# 结构分两半，与 dsh-notify / dsh-whale-widget 同构：
+#   浏览器半（lib/client.js）—— 工作台右缘插件托盘一颗入口，点开管理面板；
+#   服务端半（lib/host.mjs）—— 读桌宠 config.json 与角色目录、发预览帧、写别名 /
+#                               人设 / 当前角色。渲染层不直接摸盘，全部走
+#                               laji-plugin://<id>/__proxy/...。
+#
+# 数据源（只读 + 少量白名单写）：
+#   %APPDATA%\dsh-pet-standalone-laji\config.json   桌宠配置（character /
+#                                                    character_aliases /
+#                                                    pet_persona_overrides ...）
+#   %APPDATA%\dsh-pet-standalone-laji\characters\   用户角色（热加载目录）
+#   packs/plugins/*/characters\                     插件自带角色（aboutme-pets 等）
+#
+# 桌宠本体带 config watcher：外部落盘的改动会被它去抖后热应用（app.py
+# _apply_external_config_change），所以别名 / 人设改完立即生效；「当前角色」
+# 是启动项，切换后提示用户重启桌宠。
+
+[plugin]
+id = "com.nerve.xiaoxiao-pet-manager"
+name = "桌宠管家"
+version = "0.3.0"
+min_laji = "0.1.0"
+description = "桌宠的一站式管理面板：角色卡 + 小口袋全量配置，模型清单与小工位设置同源，全局与每宠键分流落盘，菜单编排、功能卡、快捷启动、人设覆盖都可在面板里改。"
+homepage = "https://github.com/yshuang722-spec/xiaoxiao-zhuochong"
+
+[permissions]
+network = []
+
+[[contributions.workbench]]
+id = "xiaoxiao-pet-manager"
+title = "桌宠管家"
+entry = "lib/client.js"
+
+[[contributions.apps]]
+id = "xiaoxiao-pet-host"
+name = "桌宠管家本机服务"
+command = "${node}"
+args = ["lib/host.mjs"]
+workdir = "${plugin}"
+autostart = true

@@ -1,0 +1,23 @@
+# 任务中心（Task Center）· Laji 官方插件
+#
+# 解决的问题：任务原本散在各工作区的会话里，想看只能一个个点开侧栏。
+# 这个插件把 daemon 的 run 汇成一张能筛、能管、能看进度与结论的清单。
+#
+# 数据全部只读：`ctx.runs.list()` 由宿主转发到已有的 `runs:list` IPC
+# （apps/laji-agent/src/main/ipc.ts:1133），插件自己不连 daemon、不碰凭据。
+# 见 README.md「宿主能力面」一节。
+
+[plugin]
+id = "com.nerve.task-center"
+name = "任务中心"
+version = "0.1.0"
+min_laji = "0.1.0"
+description = "把所有工作区正在跑、排队、等你决定的 daemon run 汇成一处：筛选、搜索、看进度与改动、批准与终止，全部在一张表里完成。"
+
+[permissions]
+network = []
+
+[[contributions.workbench]]
+id = "task-center"
+title = "任务中心"
+entry = "lib/client.js"

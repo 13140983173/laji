@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" width="320" height="200" role="img" aria-label="鲸落 · 未至之境 皮肤预览">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#070d1c"/>
+      <stop offset="0.55" stop-color="#05070d"/>
+      <stop offset="1" stop-color="#0a1020"/>
+    </linearGradient>
+    <linearGradient id="edge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3a7bff"/>
+      <stop offset="1" stop-color="#39ffd1"/>
+    </linearGradient>
+    <radialGradient id="glowA" cx="0.1" cy="-0.05" r="0.7">
+      <stop offset="0" stop-color="#3a7bff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#3a7bff" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowB" cx="0.95" cy="0.05" r="0.6">
+      <stop offset="0" stop-color="#39ffd1" stop-opacity="0.3"/>
+      <stop offset="1" stop-color="#39ffd1" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="16" height="16" patternUnits="userSpaceOnUse">
+      <path d="M16 0H0V16" fill="none" stroke="#1e3a6b" stroke-opacity="0.5" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+
+  <rect width="320" height="200" fill="url(#sky)"/>
+  <rect width="320" height="200" fill="url(#grid)" opacity="0.5"/>
+  <rect width="320" height="200" fill="url(#glowA)"/>
+  <rect width="320" height="200" fill="url(#glowB)"/>
+
+  <!-- 侧栏 -->
+  <rect x="0" y="0" width="66" height="200" fill="#0a1020" opacity="0.86"/>
+  <line x1="66" y1="0" x2="66" y2="200" stroke="#1e3a6b" stroke-width="1"/>
+  <rect x="10" y="16" width="34" height="4" rx="2" fill="#8fa8cc" opacity="0.75"/>
+  <rect x="10" y="32" width="46" height="14" rx="4" fill="#3a7bff" opacity="0.22"/>
+  <rect x="10" y="32" width="2.5" height="14" rx="1.2" fill="#3a7bff"/>
+  <rect x="16" y="37" width="32" height="3" rx="1.5" fill="#e8f1ff" opacity="0.8"/>
+  <rect x="10" y="54" width="40" height="3" rx="1.5" fill="#8fa8cc" opacity="0.45"/>
+  <rect x="10" y="66" width="44" height="3" rx="1.5" fill="#8fa8cc" opacity="0.45"/>
+  <rect x="10" y="78" width="28" height="3" rx="1.5" fill="#8fa8cc" opacity="0.45"/>
+
+  <!-- 顶栏 -->
+  <line x1="66" y1="26" x2="320" y2="26" stroke="#1e3a6b" stroke-width="1"/>
+  <rect x="78" y="13" width="52" height="4" rx="2" fill="#e8f1ff" opacity="0.85"/>
+  <rect x="286" y="11" width="22" height="8" rx="4" fill="#39ffd1" opacity="0.18" stroke="#39ffd1" stroke-opacity="0.5"/>
+
+  <!-- 主对话卡：左侧发光色带 -->
+  <rect x="78" y="40" width="228" height="62" rx="8" fill="#0a1020" opacity="0.82" stroke="#1e3a6b"/>
+  <rect x="78" y="40" width="3" height="62" rx="1.5" fill="url(#edge)"/>
+  <rect x="90" y="52" width="120" height="4" rx="2" fill="#e8f1ff" opacity="0.9"/>
+  <rect x="90" y="64" width="188" height="3" rx="1.5" fill="#8fa8cc" opacity="0.55"/>
+  <rect x="90" y="74" width="164" height="3" rx="1.5" fill="#8fa8cc" opacity="0.55"/>
+  <rect x="90" y="84" width="96" height="3" rx="1.5" fill="#39ffd1" opacity="0.7"/>
+
+  <!-- 第二张卡 -->
+  <rect x="78" y="112" width="228" height="40" rx="8" fill="#0a1020" opacity="0.7" stroke="#1e3a6b" stroke-opacity="0.7"/>
+  <rect x="90" y="122" width="86" height="3" rx="1.5" fill="#8fa8cc" opacity="0.5"/>
+  <rect x="90" y="132" width="150" height="3" rx="1.5" fill="#8fa8cc" opacity="0.35"/>
+
+  <!-- 输入条 -->
+  <rect x="78" y="162" width="228" height="24" rx="10" fill="#0d1426" stroke="#3a7bff" stroke-opacity="0.55"/>
+  <rect x="90" y="172" width="70" height="3" rx="1.5" fill="#4a5973"/>
+  <circle cx="292" cy="174" r="7" fill="#3a7bff" opacity="0.9"/>
+
+  <!-- 鲸：线框剪影 -->
+  <path d="M198 152c14-3 26-9 34-17 4 5 9 7 15 7-3 5-4 9-3 13-6-2-11-2-16 0-9 5-21 8-30 7z"
+        fill="#39ffd1" opacity="0.1" stroke="#39ffd1" stroke-opacity="0.45" stroke-width="1"/>
+  <path d="M60 190c30-8 62-12 96-10 26 2 44 6 58 6" fill="none" stroke="#3a7bff" stroke-opacity="0.4" stroke-width="1"/>
+</svg>
