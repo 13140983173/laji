@@ -32,6 +32,9 @@ homepage = "https://github.com/yshuang722-spec/xiaoxiao-zhuochong"
 [permissions]
 network = []
 
+[[contributions.skills]]
+path = "skills/pet-hands/SKILL.md"
+
 [[contributions.workbench]]
 id = "xiaoxiao-pet-manager"
 title = "桌宠管家"
