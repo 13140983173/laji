@@ -1,0 +1,8 @@
+{
+ "fps": 12.0,
+ "source": "打瞌睡被惊醒.webm",
+ "frames": 120,
+ "encoder": "libwebp lossless (bgra straight, unblend-white-v6)",
+ "unblend": "white-v6",
+ "source_sha256": "914d505ab2ba3efa8e421ee04f182c00fb030dd4ac995f3d46db105c58727046"
+}

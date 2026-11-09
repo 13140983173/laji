@@ -1,0 +1,8 @@
+{
+ "fps": 12.0,
+ "source": "碎碎念-发呆碎碎念.webm",
+ "frames": 120,
+ "encoder": "libwebp lossless (bgra straight, unblend-white-v6)",
+ "unblend": "white-v6",
+ "source_sha256": "b7dc6e4dbe6570a31f8c2cab5eb32dee1aacad952bda1cc0aeca1c244bbbd71d"
+}
