@@ -1,0 +1,8 @@
+{
+ "fps": 24.0,
+ "source": "玩游戏气急败坏.webm",
+ "frames": 241,
+ "encoder": "libwebp lossless (bgra straight, unblend-white-v6)",
+ "unblend": "white-v6",
+ "source_sha256": "8e406bc52cf2a20c9d288867367c4df7c45a5dc78443bc5c2fdc83835ac0b4c3"
+}
