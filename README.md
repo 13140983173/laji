@@ -3,7 +3,7 @@
 Laji 官方插件的发布仓库。客户端插件市场通过下面这个地址读取清单：
 
 ```
-https://raw.githubusercontent.com/laji/plugins/main/pluginhub/index.json
+https://raw.githubusercontent.com/lucongming/plugins/main/pluginhub/index.json
 ```
 
 对应 `apps/desktop/src/main/plugin-hub.ts` 里的 `DEFAULT_PLUGINHUB_CATALOG_URL`。
@@ -24,7 +24,7 @@ plugins/<插件目录>/       插件本体：laji.plugin.toml + 源码
   "version": "1.2.0",
   "install": {
     "type": "github",
-    "owner": "laji",
+    "owner": "lucongming",
     "repo": "plugins",
     "ref": "main",
     "path": "plugins/dsh-whale-pond"

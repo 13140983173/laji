@@ -15,7 +15,7 @@
       "permissions": [],
       "install": {
         "type": "github",
-        "owner": "laji",
+        "owner": "lucongming",
         "repo": "plugins",
         "ref": "main",
         "path": "plugins/dsh-whale-pond"
@@ -34,7 +34,7 @@
       "permissions": [],
       "install": {
         "type": "github",
-        "owner": "laji",
+        "owner": "lucongming",
         "repo": "plugins",
         "ref": "main",
         "path": "plugins/dsh-skin-whale-fantasy"
@@ -53,7 +53,7 @@
       "permissions": [],
       "install": {
         "type": "github",
-        "owner": "laji",
+        "owner": "lucongming",
         "repo": "plugins",
         "ref": "main",
         "path": "plugins/dsh-intro-video"
@@ -72,7 +72,7 @@
       "permissions": [],
       "install": {
         "type": "github",
-        "owner": "laji",
+        "owner": "lucongming",
         "repo": "plugins",
         "ref": "main",
         "path": "plugins/dsh-pet"
@@ -91,7 +91,7 @@
       "permissions": [],
       "install": {
         "type": "github",
-        "owner": "laji",
+        "owner": "lucongming",
         "repo": "plugins",
         "ref": "main",
         "path": "plugins/dsh-pet-hands"
@@ -111,7 +111,7 @@
       "homepage": "https://github.com/MeteorNOX/DeepSeek-Balance-Whale-Widget",
       "install": {
         "type": "github",
-        "owner": "laji",
+        "owner": "lucongming",
         "repo": "plugins",
         "ref": "main",
         "path": "plugins/dsh-whale-widget"
@@ -130,7 +130,7 @@
       "permissions": [],
       "install": {
         "type": "github",
-        "owner": "laji",
+        "owner": "lucongming",
         "repo": "plugins",
         "ref": "main",
         "path": "plugins/aboutme-pets"
@@ -149,7 +149,7 @@
       "permissions": ["network"],
       "install": {
         "type": "github",
-        "owner": "laji",
+        "owner": "lucongming",
         "repo": "plugins",
         "ref": "main",
         "path": "plugins/dsh-notify"
@@ -168,7 +168,7 @@
       "permissions": [],
       "install": {
         "type": "github",
-        "owner": "laji",
+        "owner": "lucongming",
         "repo": "plugins",
         "ref": "main",
         "path": "plugins/laji-task-center"
@@ -188,7 +188,7 @@
       "homepage": "https://github.com/yshuang722-spec/xiaoxiao-zhuochong",
       "install": {
         "type": "github",
-        "owner": "laji",
+        "owner": "lucongming",
         "repo": "plugins",
         "ref": "main",
         "path": "plugins/xiaoxiao-pet-manager"
