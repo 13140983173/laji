@@ -34,17 +34,20 @@ plugins/<插件目录>/       插件本体：laji.plugin.toml + 源码
 
 ## 素材策略
 
-仓库只放源码，不放构建产物和素材大包：
+素材随插件一起入库。客户端的远程安装只认仓库归档与逐文件下载，没有 Release 附件下载能力，
+素材放在 Release 上等于装不出完整插件：
 
-| 内容 | 位置 | 原因 |
+| 内容 | 位置 | 说明 |
 | --- | --- | --- |
-| `laji.plugin.toml`、`lib/`、`src/*.py` 等源码 | 仓库内 | 体积小，需可读可 review |
-| `dsh-pet/src/assets/`（约 1.5 GB） | Release 附件 | 超过仓库合理体积 |
-| `aboutme-pets/characters/`（约 1.3 GB） | Release 附件 | 同上 |
-| `laji-pet-bundle-setup.exe`（424 MB）等构建产物 | Release 附件 | 单文件超过 GitHub 100 MB 硬限 |
+| `laji.plugin.toml`、`lib/`、`src/*.py` 等源码 | 仓库内 | 体积小，可读可 review |
+| `aboutme-pets/characters/`（约 1.3 GB / 1234 文件） | 仓库内 | 最大单文件 6.7 MB，低于 GitHub 100 MB 硬限 |
+| `dsh-pet/src/assets/`（约 1.5 GB / 25681 文件） | 仓库内 | 最大单文件 2.1 MB |
+| 安装包等构建产物（如 424 MB 的 `laji-pet-bundle-setup.exe`） | Release 附件 | 单文件超过 GitHub 100 MB 硬限，不能入库 |
 
-这两个目录已在 `.gitignore` 里排除。发版时把它们打成 zip 挂到对应 tag 的 Release 上。
-在该机制落地前，用客户端随包分发的 `packs/plugins/` 目录获取完整素材。
+仓库根 `.gitignore` 已放开这两个素材目录。`plugins/dsh-pet/src/.gitignore` 是上游自带的规则
+（忽略 `assets/characters/*/frameseq/` 等派生物），入库时用 `git add -f` 覆盖，不改上游文件。
+
+素材体积使仓库明显超过 GitHub 的 1 GB 建议值。首次克隆会比较慢，客户端走归档下载不受影响。
 
 ## 发布流程
 
