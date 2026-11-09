@@ -139,6 +139,19 @@ function sendError(res, code, message) {
 function ffmpegBin() {
   const root = pluginsRoot();
   const found = [];
+  // dsh-pet 以独立 exe 安装时（LAJI_DSH_PET_EXE 指向 laji-pet.exe），ffmpeg 就在
+  // exe 隔壁的 _internal/imageio_ffmpeg/binaries；这种形态插件目录里根本没有 bin/。
+  const petExe = process.env.LAJI_DSH_PET_EXE;
+  if (petExe) {
+    const dir = join(dirname(petExe), "_internal", "imageio_ffmpeg", "binaries");
+    try {
+      for (const name of readdirSync(dir)) {
+        if (/^ffmpeg.*\.exe$/i.test(name)) found.push(join(dir, name));
+      }
+    } catch {
+      /* 不是 onedir 安装 */
+    }
+  }
   for (const pack of ["com.nerve.dsh-pet", "dsh-pet"]) {
     const base = join(root, pack);
     let versions = [];
