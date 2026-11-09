@@ -16,6 +16,4 @@ node_modules/
 .ruff_cache/
 .scratch/
 
-# 大体积素材：由 Release 附件下发，见 README「素材策略」
-plugins/dsh-pet/src/assets/
-plugins/aboutme-pets/characters/
+# 大体积素材：随源码入库（无单文件超 100 MB）
