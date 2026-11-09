@@ -1,0 +1,8 @@
+{
+ "fps": 24.0,
+ "source": "插茱萸赏菊.webm",
+ "frames": 241,
+ "encoder": "libwebp lossless (bgra straight, unblend-white-v6)",
+ "unblend": "white-v6",
+ "source_sha256": "4e1ba56724da3663e2f5480001ab1141a82e8618c316e6e81e3dae84998452f3"
+}
