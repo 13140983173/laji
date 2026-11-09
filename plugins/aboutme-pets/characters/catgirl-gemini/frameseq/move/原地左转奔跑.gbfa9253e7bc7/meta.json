@@ -1,0 +1,8 @@
+{
+ "fps": 12.0,
+ "source": "原地左转奔跑.webm",
+ "frames": 120,
+ "encoder": "libwebp lossless (bgra straight, unblend-white-v6)",
+ "unblend": "white-v6",
+ "source_sha256": "bfa9253e7bc76484f445e4ddea99df61cbb76c0911d37ef9c41b8855b757623a"
+}
