@@ -1,4 +1,16 @@
 {
   "name": "蓝毛小女仆·新动作包",
+  "body_box": [
+    211,
+    62,
+    429,
+    330
+  ],
+  "head_box": [
+    207,
+    60,
+    433,
+    178
+  ],
   "source": "hunmer/aboutme-pets dsh1"
 }

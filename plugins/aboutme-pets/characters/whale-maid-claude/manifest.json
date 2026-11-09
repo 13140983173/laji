@@ -1,4 +1,16 @@
 {
   "name": "蓝毛小女仆·Claude批次",
+  "body_box": [
+    197,
+    62,
+    443,
+    330
+  ],
+  "head_box": [
+    193,
+    60,
+    447,
+    178
+  ],
   "source": "hunmer/aboutme-pets claude"
 }

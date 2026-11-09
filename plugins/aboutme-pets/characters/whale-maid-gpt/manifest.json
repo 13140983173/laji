@@ -1,4 +1,16 @@
 {
   "name": "蓝毛小女仆·GPT批次",
+  "body_box": [
+    216,
+    62,
+    424,
+    330
+  ],
+  "head_box": [
+    212,
+    60,
+    428,
+    178
+  ],
   "source": "hunmer/aboutme-pets gpt"
 }

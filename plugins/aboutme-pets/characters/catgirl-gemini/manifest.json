@@ -1,4 +1,16 @@
 {
   "name": "猫耳娘·Gemini批次",
+  "body_box": [
+    206,
+    62,
+    434,
+    330
+  ],
+  "head_box": [
+    202,
+    60,
+    438,
+    178
+  ],
   "source": "hunmer/aboutme-pets gemini"
 }
