@@ -1,0 +1,8 @@
+{
+ "fps": 12.0,
+ "source": "原地小憩沉眠.webm",
+ "frames": 120,
+ "encoder": "libwebp lossless (bgra straight, unblend-white-v6)",
+ "unblend": "white-v6",
+ "source_sha256": "ff20400b14767e759d3f6d80ff9e56a9a8bd9ab3de837f222f87d5caf4e031b1"
+}

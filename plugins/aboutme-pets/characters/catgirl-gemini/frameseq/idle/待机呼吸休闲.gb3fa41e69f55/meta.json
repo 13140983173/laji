@@ -1,0 +1,8 @@
+{
+ "fps": 12.0,
+ "source": "待机呼吸休闲.webm",
+ "frames": 120,
+ "encoder": "libwebp lossless (bgra straight, unblend-white-v6)",
+ "unblend": "white-v6",
+ "source_sha256": "b3fa41e69f55b7c7dbcdf77d07b152d85b3c56e1ba8ff46106d2437d477da0de"
+}
