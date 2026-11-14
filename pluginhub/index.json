@@ -60,10 +60,10 @@
       }
     },
     {
-      "id": "com.nerve.dsh-pet",
+      "id": "com.nerve.laji-pet",
       "name": "大肥鱼桌宠（DSH）",
       "description": "桌面常驻的桌宠形象：随对话进展切换动作和气泡，正在处理、等待确认、报错、空闲都能一眼看到。",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "category": "desktop",
       "kind": ["app", "pet"],
       "trust": "L3",
@@ -71,15 +71,16 @@
       "publisher": "Nerve",
       "permissions": [],
       "install": {
-        "type": "github",
+        "type": "release",
         "owner": "13140983173",
         "repo": "laji",
-        "ref": "main",
-        "path": "plugins/dsh-pet"
+        "tag": "laji-pet-v1.1.0",
+        "asset": "laji-pet-1.1.0-win-x64.zip",
+        "sha256": "0dadac77ccefeb93576b49f37f7e1ecd9daba9ba12dbdf49334a2fa24c840ba9"
       }
     },
     {
-      "id": "com.nerve.dsh-pet-hands",
+      "id": "com.nerve.laji-pet-hands",
       "name": "伙伴的手（Pet Hands）",
       "description": "让桌宠看得见你的屏幕并动手：读窗口控件树、点按钮、输入文字；动之前先说一句。依赖本机已安装的 Cua Driver。",
       "version": "0.1.0",
@@ -94,7 +95,7 @@
         "owner": "13140983173",
         "repo": "laji",
         "ref": "main",
-        "path": "plugins/dsh-pet-hands"
+        "path": "plugins/laji-pet-hands"
       }
     },
     {
