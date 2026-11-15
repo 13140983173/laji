@@ -1,6 +1,11 @@
 {
   "version": 1,
   "updated_at": "2026-11-09",
+  "hidden": [
+    "com.nerve.dsh-whale-widget",
+    "com.nerve.task-center",
+    "com.nerve.dsh-skin-whale-fantasy"
+  ],
   "plugins": [
     {
       "id": "com.nerve.dsh-whale-pond",
@@ -8,7 +13,10 @@
       "description": "把会游动的鲸鱼海铺在界面背后：鱼群、气泡、潮汐等 20 项效果实时可调。",
       "version": "1.2.0",
       "category": "appearance",
-      "kind": ["skin", "workbench"],
+      "kind": [
+        "skin",
+        "workbench"
+      ],
       "trust": "L3",
       "featured": true,
       "publisher": "Nerve",
@@ -27,7 +35,10 @@
       "description": "深海电光皮肤：星尘上浮、极光呼吸、全息扫描线与指针视差（电光蓝 / 薄荷青 / 星紫 / 珊瑚粉）。",
       "version": "1.1.0",
       "category": "appearance",
-      "kind": ["skin", "workbench"],
+      "kind": [
+        "skin",
+        "workbench"
+      ],
       "trust": "L3",
       "featured": true,
       "publisher": "Nerve",
@@ -46,7 +57,9 @@
       "description": "每次启动先播一段全屏深海动画，可随时按 Esc 跳过；卸载后直接进主界面。",
       "version": "1.0.0",
       "category": "appearance",
-      "kind": ["intro"],
+      "kind": [
+        "intro"
+      ],
       "trust": "L3",
       "featured": false,
       "publisher": "Nerve",
@@ -65,7 +78,10 @@
       "description": "桌面常驻的桌宠形象：随对话进展切换动作和气泡，正在处理、等待确认、报错、空闲都能一眼看到。",
       "version": "1.1.1",
       "category": "desktop",
-      "kind": ["app", "pet"],
+      "kind": [
+        "app",
+        "pet"
+      ],
       "trust": "L3",
       "featured": true,
       "publisher": "Nerve",
@@ -85,7 +101,10 @@
       "description": "让桌宠看得见你的屏幕并动手：读窗口控件树、点按钮、输入文字；动之前先说一句。依赖本机已安装的 Cua Driver。",
       "version": "0.1.0",
       "category": "desktop",
-      "kind": ["pet", "tool"],
+      "kind": [
+        "pet",
+        "tool"
+      ],
       "trust": "L3",
       "featured": false,
       "publisher": "Nerve",
@@ -104,11 +123,16 @@
       "description": "界面右下角的小鲸鱼：DeepSeek 余额、峰谷定价、点击气泡序列（文本 / 余额 / 图片 / 音效）与逐行样式，设置本地持久化。",
       "version": "0.4.2",
       "category": "desktop",
-      "kind": ["widget", "workbench"],
+      "kind": [
+        "widget",
+        "workbench"
+      ],
       "trust": "L3",
       "featured": true,
       "publisher": "MeteorNOX",
-      "permissions": ["network"],
+      "permissions": [
+        "network"
+      ],
       "homepage": "https://github.com/MeteorNOX/DeepSeek-Balance-Whale-Widget",
       "install": {
         "type": "github",
@@ -124,7 +148,10 @@
       "description": "给大肥鱼桌宠追加 4 套动作角色包：蓝毛小女仆·新动作包（166 动作）、GPT 批次（193）、Claude 批次（166）、Gemini 猫耳娘批次（100），共 625 个透明动作，桌宠右键菜单即可切换。",
       "version": "1.0.0",
       "category": "desktop",
-      "kind": ["pet", "assets"],
+      "kind": [
+        "pet",
+        "assets"
+      ],
       "trust": "L3",
       "featured": false,
       "publisher": "Nerve",
@@ -143,11 +170,16 @@
       "description": "审批、提问、错误、计划事件推送到短信 / 邮件 / 企业微信；装完在活动栏底的插件中心里多一条，点开右侧就是这块设置面板。",
       "version": "0.1.1",
       "category": "productivity",
-      "kind": ["workbench", "app"],
+      "kind": [
+        "workbench",
+        "app"
+      ],
       "trust": "L3",
       "featured": false,
       "publisher": "Nerve",
-      "permissions": ["network"],
+      "permissions": [
+        "network"
+      ],
       "install": {
         "type": "github",
         "owner": "13140983173",
@@ -162,7 +194,9 @@
       "description": "把所有工作区正在跑、排队、等你决定的 daemon run 汇成一处：筛选、搜索、看进度与改动、批准与终止，全部在一张表里完成。",
       "version": "0.1.0",
       "category": "productivity",
-      "kind": ["workbench"],
+      "kind": [
+        "workbench"
+      ],
       "trust": "L3",
       "featured": false,
       "publisher": "Nerve",
@@ -181,7 +215,10 @@
       "description": "桌宠的一站式管理面板：角色卡 + 小口袋全量配置，模型清单与小工位设置同源，全局与每宠键分流落盘，菜单编排、功能卡、快捷启动、人设覆盖都可在面板里改。",
       "version": "0.3.0",
       "category": "desktop",
-      "kind": ["workbench", "app"],
+      "kind": [
+        "workbench",
+        "app"
+      ],
       "trust": "L3",
       "featured": false,
       "publisher": "Nerve",
