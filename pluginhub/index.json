@@ -4,7 +4,8 @@
   "hidden": [
     "com.nerve.dsh-whale-widget",
     "com.nerve.task-center",
-    "com.nerve.dsh-skin-whale-fantasy"
+    "com.nerve.dsh-skin-whale-fantasy",
+    "com.nerve.xiaoxiao-pet-manager"
   ],
   "plugins": [
     {
@@ -68,7 +69,7 @@
       "id": "com.nerve.laji-pet",
       "name": "小小桌宠",
       "description": "桌面常驻的桌宠形象：随对话进展切换动作和气泡，正在处理、等待确认、报错、空闲都能一眼看到。内置猫耳娘等角色，右键菜单即可切换。",
-      "version": "1.2.0",
+      "version": "1.2.1",
       "category": "desktop",
       "kind": ["app", "pet"],
       "trust": "L3",
@@ -79,9 +80,9 @@
         "type": "release",
         "owner": "13140983173",
         "repo": "laji",
-        "tag": "laji-pet-v1.2.0",
-        "asset": "laji-pet-1.2.0-win-x64.zip",
-        "sha256": "1244fea0bb4cf6176ecaf4a398eb87c8a8824413cc712b3fb84aa9ed50cb95d6"
+        "tag": "laji-pet-v1.2.1",
+        "asset": "laji-pet-1.2.1-win-x64.zip",
+        "sha256": "72dcaa536c0340d8580278f5b81e1b865ee33b9101112d5818cc6576642e5939"
       }
     },
     {
