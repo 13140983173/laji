@@ -69,7 +69,7 @@
       "id": "com.nerve.laji-pet",
       "name": "小小桌宠",
       "description": "桌面常驻的桌宠形象：随对话进展切换动作和气泡，正在处理、等待确认、报错、空闲都能一眼看到。内置猫耳娘等角色，右键菜单即可切换。",
-      "version": "1.2.1",
+      "version": "1.2.2",
       "category": "desktop",
       "kind": ["app", "pet"],
       "trust": "L3",
