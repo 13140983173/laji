@@ -27,7 +27,9 @@
         "repo": "laji",
         "ref": "main",
         "path": "plugins/dsh-whale-pond"
-      }
+      },
+      "size": 101880,
+      "updated": "2026-10-29"
     },
     {
       "id": "com.nerve.dsh-skin-whale-fantasy",
@@ -49,7 +51,9 @@
         "repo": "laji",
         "ref": "main",
         "path": "plugins/dsh-skin-whale-fantasy"
-      }
+      },
+      "size": 34102,
+      "updated": "2026-10-30"
     },
     {
       "id": "com.nerve.dsh-intro-video",
@@ -70,7 +74,9 @@
         "repo": "laji",
         "ref": "main",
         "path": "plugins/dsh-intro-video"
-      }
+      },
+      "size": 832,
+      "updated": "2026-10-29"
     },
     {
       "id": "com.nerve.laji-pet",
@@ -105,7 +111,9 @@
           "https://cdn.jsdelivr.net/gh/13140983173/laji@main/pluginhub/previews/laji-pet-img2.webp",
           "https://cdn.jsdelivr.net/gh/13140983173/laji@main/pluginhub/previews/laji-pet-img3.webp"
         ]
-      }
+      },
+      "size": 481296384,
+      "updated": "2026-11-15"
     },
     {
       "id": "com.nerve.laji-pet-hands",
@@ -127,7 +135,9 @@
         "repo": "laji",
         "ref": "main",
         "path": "plugins/laji-pet-hands"
-      }
+      },
+      "size": 193106,
+      "updated": "2026-11-14"
     },
     {
       "id": "com.nerve.pet-char-catgirl",
@@ -160,7 +170,9 @@
         "tag": "pet-char-catgirl-v1.0.0",
         "asset": "pet-char-catgirl-1.0.0-win-x64.zip",
         "sha256": "75826e181e86f339cf07f500d42d23b277453c0d5cebdf53493702803867b5a5"
-      }
+      },
+      "size": 256481689,
+      "updated": "2026-11-15"
     },
     {
       "id": "com.nerve.pet-char-claude",
@@ -189,7 +201,9 @@
         "tag": "pet-char-claude-v1.0.0",
         "asset": "pet-char-claude-1.0.0-win-x64.zip",
         "sha256": "2e27bf4092326f515082c7fd3b3003b567f3e4e0ddf0bd4a182f99edf"
-      }
+      },
+      "size": 292133273,
+      "updated": "2026-11-15"
     },
     {
       "id": "com.nerve.pet-char-gpt",
@@ -217,7 +231,9 @@
         "tag": "pet-char-gpt-v1.0.0",
         "asset": "pet-char-gpt-1.0.0-win-x64.zip",
         "sha256": "d41fc4628b7a0532017d81ce5d4ce55bb7b88e09e90fd4e5f549f9e7bc834189"
-      }
+      },
+      "size": 354418688,
+      "updated": "2026-11-15"
     },
     {
       "id": "com.nerve.pet-char-extra",
@@ -245,11 +261,13 @@
         "tag": "pet-char-extra-v1.0.0",
         "asset": "pet-char-extra-1.0.0-win-x64.zip",
         "sha256": "596e25e4b6290136d6459ff49e3c854e8ddf6e43b821a70d293cf080e846202a"
-      }
+      },
+      "size": 467560038,
+      "updated": "2026-11-15"
     },
     {
       "id": "com.nerve.aha-pet",
-      "name": "ling",
+      "name": "桌宠角色包（aha-pet）",
       "description": "Team aha lucongming 自制吉祥物：给小小桌宠追加 ling 角色包，桌宠右键菜单即可切换。",
       "version": "1.0.2",
       "category": "desktop",
@@ -279,7 +297,9 @@
           "https://cdn.jsdelivr.net/gh/13140983173/laji@main/pluginhub/previews/aha-pet-img2.webp",
           "https://cdn.jsdelivr.net/gh/13140983173/laji@main/pluginhub/previews/aha-pet-img3.webp"
         ]
-      }
+      },
+      "size": 317014465,
+      "updated": "2026-11-15"
     },
     {
       "id": "com.nerve.dsh-whale-widget",
@@ -304,7 +324,9 @@
         "repo": "laji",
         "ref": "main",
         "path": "plugins/dsh-whale-widget"
-      }
+      },
+      "size": 7157520,
+      "updated": "2026-10-31"
     },
     {
       "id": "com.nerve.dsh-notify",
@@ -328,7 +350,9 @@
         "repo": "laji",
         "ref": "main",
         "path": "plugins/dsh-notify"
-      }
+      },
+      "size": 436566,
+      "updated": "2026-11-05"
     },
     {
       "id": "com.nerve.task-center",
@@ -349,7 +373,9 @@
         "repo": "laji",
         "ref": "main",
         "path": "plugins/laji-task-center"
-      }
+      },
+      "size": 73826,
+      "updated": "2026-11-07"
     },
     {
       "id": "com.nerve.xiaoxiao-pet-manager",
@@ -372,7 +398,9 @@
         "repo": "laji",
         "ref": "main",
         "path": "plugins/xiaoxiao-pet-manager"
-      }
+      },
+      "size": 412506,
+      "updated": "2026-11-14"
     }
   ],
   "updated_at": "2026-11-15"
