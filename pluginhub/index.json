@@ -80,9 +80,9 @@
         "type": "release",
         "owner": "13140983173",
         "repo": "laji",
-        "tag": "laji-pet-v1.2.1",
-        "asset": "laji-pet-1.2.1-win-x64.zip",
-        "sha256": "72dcaa536c0340d8580278f5b81e1b865ee33b9101112d5818cc6576642e5939"
+        "tag": "laji-pet-v1.2.2",
+        "asset": "laji-pet-1.2.2-win-x64.zip",
+        "sha256": "68b59280db0e39ca9a6a6e967450777c505ae1f17ffc9c93bd56c5c11b515603"
       }
     },
     {
@@ -102,6 +102,26 @@
         "repo": "laji",
         "ref": "main",
         "path": "plugins/laji-pet-hands"
+      }
+    },
+    {
+      "id": "com.nerve.aha-pet",
+      "name": "桌宠角色包（aha-pet）",
+      "description": "给小小桌宠追加 Ling girl 角色包，桌宠右键菜单即可切换。",
+      "version": "1.0.0",
+      "category": "desktop",
+      "kind": ["pet"],
+      "trust": "L3",
+      "featured": false,
+      "publisher": "Nerve",
+      "permissions": [],
+      "install": {
+        "type": "release",
+        "owner": "13140983173",
+        "repo": "laji",
+        "tag": "aha-pet-v1.0.0",
+        "asset": "aha-pet-1.0.0-win-x64.zip",
+        "sha256": "b1d2ea114e87c3e27410c7fa9336578752471761fd38929ac5289b769e6dc289"
       }
     },
     {
