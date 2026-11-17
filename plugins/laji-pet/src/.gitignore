@@ -45,6 +45,10 @@ assets/characters/*/frameseq/
 build/
 dist/
 *.spec
+# 例外：laji-pet.spec 是手写的构建清单（「收哪些包/数据」的唯一真相），
+# 不是 PyInstaller 生成的构建中间物。忽略它会让素材 datas 的错误写法永远
+# 无人能改：1.2.3–1.2.5 三个版本的素材都被打成 `X.webm/X.webm` 嵌套。
+!laji-pet.spec
 
 # 本地开发文档（不随仓库发布）
 LOG.md
