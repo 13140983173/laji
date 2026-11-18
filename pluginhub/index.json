@@ -84,7 +84,7 @@
       "order": 1,
       "name": "小小桌宠",
       "description": "桌面常驻的桌宠形象：随对话进展切换动作和气泡，正在处理、等待确认、报错、空闲都能一眼看到。默认自带大肥鱼，其余角色走素材包按需下载。",
-      "version": "1.2.6",
+      "version": "1.2.7",
       "category": "desktop",
       "kind": [
         "app",
@@ -98,9 +98,9 @@
         "type": "release",
         "owner": "13140983173",
         "repo": "laji",
-        "tag": "laji-pet-v1.2.6",
-        "asset": "laji-pet-1.2.6-win-x64.zip",
-        "sha256": "26730a41b26d1e465cb74df272c4fbeb82d4a2d838919aa1fa68f640c9e50d8a"
+        "tag": "laji-pet-v1.2.7",
+        "asset": "laji-pet-1.2.7-win-x64.zip",
+        "sha256": "37d031784f7d4e8251adc20085411efebab8444f806f669caa4a0a162a20b1d7"
       },
       "preview": {
         "videos": [
@@ -114,8 +114,8 @@
           "https://cdn.jsdelivr.net/gh/13140983173/laji@main/pluginhub/previews/laji-pet-img3.webp"
         ]
       },
-      "size": 480044810,
-      "updated": "2026-11-17"
+      "size": 481345706,
+      "updated": "2026-11-18"
     },
     {
       "id": "com.nerve.laji-pet-hands",
