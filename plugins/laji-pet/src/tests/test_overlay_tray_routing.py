@@ -40,7 +40,7 @@ from tests.test_overlay_spawn import _make_persistent_shell
 
 app = QApplication.instance() or QApplication([])
 
-MAIN_LABEL = "主肥鱼 [slot-0]"
+MAIN_LABEL = "主桌宠"
 
 
 # ---------------------------------------------------------------- 探测工具
@@ -88,7 +88,8 @@ def _action(menu, label: str):
 
 
 def _child_label(shell, sprite) -> str:
-    return f"小肥鱼 [slot-{shell._spawned_slots[sprite]}]"
+    """逐只子菜单标签：编号按当前活跃顺序重排（不再暴露 slot 号）。"""
+    return f"桌宠{shell._spawned.index(sprite) + 1}"
 
 
 def _spawn_two(shell):
@@ -153,7 +154,7 @@ def test_tray_single_pet_has_per_pet_close_entry(tmp_path):
     try:
         menu = _tray_menu(shell)
         labels = _labels(menu)
-        for expected in ("显示 / 隐藏", "回到左上角", "生小肥鱼", "退出子肥鱼",
+        for expected in ("显示 / 隐藏", "回到左上角", "再来一只", "退出其他桌宠",
                          "桌宠设置", "退出"):
             assert expected in labels, f"托盘缺项 {expected}；实际: {labels}"
         sub = _submenus(menu).get(MAIN_LABEL)
@@ -337,8 +338,8 @@ def test_tray_aggregate_entries_and_quit(tmp_path):
     try:
         _spawn_two(shell)
         shell.overlay.show()
-        _action(_tray_menu(shell), "退出子肥鱼").trigger()
-        assert shell._spawned != [], "菜单还开着，退出子肥鱼不许内联执行"
+        _action(_tray_menu(shell), "退出其他桌宠").trigger()
+        assert shell._spawned != [], "菜单还开着，退出其他桌宠不许内联执行"
         assert _wait_until(lambda: shell._spawned == []), "菜单关闭后必须清空子肥鱼"
 
         toggle = _action(_tray_menu(shell), "显示 / 隐藏")

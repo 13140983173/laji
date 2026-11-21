@@ -194,7 +194,6 @@ from .persona_template import (
     PARAMETERS,
 )
 from . import settings_default_marks
-from .chat.model_settings_page import ChatModelPage
 from .file_interpret import settings as settings_file_interpret
 from . import settings_interaction
 from .music import settings as settings_music
@@ -723,7 +722,10 @@ class ModernSettingsDialog(QDialog):
         island_layout.addWidget(SettingsSection(
             "桌面组件", settings_network.build_island_network_rows(self), island_content))
         island_layout.addStretch(1)
-        self._add_page("灵动岛", "island", self._page_shell("灵动岛", island_content))
+        # 2026-11-18 灵动岛下线（features.RETIRED_FEATURES）：页面仍构建（控件与保存
+        # 链路共用），但不再挂给任何设置域——域「桌面组件」随之无页不列，侧栏不长。
+        if _fa.is_active("dynamic_island"):
+            self._add_page("灵动岛", "island", self._page_shell("灵动岛", island_content))
 
         behavior_content = QWidget()
         behavior_layout = QVBoxLayout(behavior_content)
@@ -787,17 +789,17 @@ class ModernSettingsDialog(QDialog):
         )
         behavior_layout.addWidget(
             SettingsSection(
-                "生小肥鱼",
+                "再来一只",
                 [
                     SettingRow(
                         "spawn_inherit_size",
-                        "生小肥鱼继承大小",
-                        "开启后生成的小肥鱼与主肥鱼大小一致；关闭后使用下方为小肥鱼单独选择的大小。",
+                        "新桌宠继承大小",
+                        "开启后新生成的桌宠与主桌宠大小一致；关闭后使用下方为新桌宠单独选择的大小。",
                         self.spawn_inherit_size_check,
                     ),
-                    SettingRow("spawn_scale", "小肥鱼大小", "关闭“继承大小”时，新生成小肥鱼使用的桌面尺寸。", self.spawn_scale_combo, stacked=True),
+                    SettingRow("spawn_scale", "新桌宠大小", "关闭“继承大小”时，新生成桌宠使用的桌面尺寸。", self.spawn_scale_combo, stacked=True),
                     SettingRow(
-                        "clear_spawned_pets", "一键退出子肥鱼", "关闭所有已生成的小肥鱼。它们的档案、设置、会话与待办数据全部保留，随时可以再生成。", self.clear_spawned_pets_btn
+                        "clear_spawned_pets", "一键退出其他桌宠", "关闭所有已生成的其他桌宠。它们的档案、设置、会话与待办数据全部保留，随时可以再生成。", self.clear_spawned_pets_btn
                     ),
                 ],
                 behavior_content,
@@ -919,7 +921,7 @@ class ModernSettingsDialog(QDialog):
             SettingsSection(
                 "桌宠显示",
                 [
-                    SettingRow("scale", "桌宠大小", "调整桌宠在桌面上的显示尺寸。", self.scale_combo),
+                    SettingRow("scale", "桌宠大小", "调整桌宠在桌面上的显示尺寸。", self.scale_combo, default_tools=False),
                     SettingRow(
                         "bubble_text_scale",
                         "气泡文字大小",
@@ -1694,7 +1696,7 @@ class ModernSettingsDialog(QDialog):
         self._set_setting_rows_visible(("menu_opacity",), enabled)
 
     def _update_spawn_size_controls(self, inherit_size: bool) -> None:
-        """“生小肥鱼继承大小”关闭时才显示独立小肥鱼大小选择。"""
+        """「新桌宠继承大小」关闭时才显示独立的新桌宠大小选择。"""
         self._set_setting_rows_visible(
             ("spawn_scale",),
             not bool(inherit_size),
@@ -1954,6 +1956,11 @@ class ModernSettingsDialog(QDialog):
                 # 「多开」分组已随拓扑收口 Phase A 隐藏（见上方注释）
             ]
         )
+        # 「通用」域（2026-11-18 用户要求）：小口袋侧栏原本只有「桌宠 / AI 与对话」，
+        # 而「桌宠大小」这一行落在「显示与音乐」标签里——小口袋把那个标签 hide 掉了
+        # （只留「我的角色」），用户实际没有任何调大小的入口。开一个只收这一组的域，
+        # 放进侧栏可见清单。
+        common = page_content([("显示大小", claim("scale"))])
         # 碰撞音效 2 行按 2026-09-17 定稿口径留在「桌宠」：开关紧跟碰撞开关，
         # 音量随物理参数进「碰撞参数（高级）」。
         collision_primary = claim("collision_enabled", "collision_sound_enabled")
@@ -1982,7 +1989,7 @@ class ModernSettingsDialog(QDialog):
             "显示与音乐",
             page_content(
                 [
-                    ("显示", claim("scale", "bubble_text_scale", "pet_opacity")),
+                    ("显示", claim("bubble_text_scale", "pet_opacity")),
                     # 音乐模块未激活：两组的行已 claim（上面），这里不挂出
                     *([("音乐关联", music_rows)] if music_on else []),
                     *([(settings_music.advanced_group_title(self), music_advanced, True)]
@@ -1998,7 +2005,7 @@ class ModernSettingsDialog(QDialog):
                     ("动画与移动", claim("playback_speed", "animation_gap", "idle_low_fps", "no_move")),
                     ("拖拽与弹射", claim("drag_physics", "drop_gravity", "throw_strength", "slingshot_enabled", "lock_position", "shift_drag")),
                     ("边缘探头", claim("edge_probe")),
-                    ("生小肥鱼", claim("spawn_inherit_size", "spawn_scale", "clear_spawned_pets")),
+                    ("再来一只", claim("spawn_inherit_size", "spawn_scale", "clear_spawned_pets")),
                     ("多开碰撞", collision_primary),
                     ("碰撞参数（高级）", collision_advanced, True),
                 ]
@@ -2027,33 +2034,47 @@ class ModernSettingsDialog(QDialog):
         interaction = settings_interaction.build_interaction_domain(self)
         # 点击音效 4 行与 click_self_talk / click_balance / click_talk_bindings
         # 同享 click_ 前缀，按 2026-09-17 定稿口径整组留在 interaction 域。
-        # 「菜单」域整域下线（2026-11-18 用户拍板：右键菜单固定用默认那套）：
-        # 菜单编排 / 快捷启动 / 外观（含高级配色、彩蛋入口）不再出现在设置里。
-        # 行仍 claim——全局不变量要求每行有归属、不掉「待分类（开发期）」；控件
-        # 与依赖行为原样保留（menu_layout_editor 仍是保存链的读写端），只装进挂着
-        # 对话框的隐藏容器：不进视觉层，也不进搜索索引（不在任何域页里）。
-        menu_rows: list[SettingRow] = list(claim("context_menu_layout"))
-        menu_rows += settings_network.build_menu_rows(self)
-        quick_launch_rows = claim("quick_launch_apps")  # 模块未激活也走这里：claim 防「待分类」
-        menu_rows += quick_launch_rows
-        menu_rows += claim("menu_theme", "menu_density", "menu_radius", "menu_font",
-                           "menu_font_size", "menu_translucent", "menu_opacity")
-        menu_rows += claim(
-            "light_background",
-            "light_foreground",
-            "light_hover",
-            "dark_background",
-            "dark_foreground",
-            "dark_hover",
+        # 「菜单」域（2026-11-18 曾整域下线，2026-11-19 按用户要求恢复）：默认布局把
+        # 「播放动画 / 切换角色」等动作默认隐藏，用户唯一的开回入口就是本域的「菜单
+        # 编排」——整域下线等于把那条路一起封了，所以退回原位。域内三个互斥任务切
+        # 标签：编排树很长、快捷启动是应用清单、外观只是少量色彩/字体偏好。
+        menu = SettingsTabContainer(self)
+        # 布局编辑器要「编辑区 + 预览」两栏并排，所以本域自己声明比默认阅读宽更宽的上限
+        # （CONTENT_READING_MAX_WIDTH 只做默认值，见 settings_widgets 里那条注释）。
+        menu.setProperty("contentMaxWidth", 1240)
+        menu.addTab(
+            "layout",
+            "菜单编排",
+            page_content(
+                [
+                    ("内容与布局", claim("context_menu_layout")),
+                    # 「网络信息」入口显隐跟着菜单内容走：它决定的就是菜单里有没有这一项。
+                    ("菜单入口", settings_network.build_menu_rows(self)),
+                ]
+            ),
         )
-        menu_rows += claim_prefix("egg_")
-        self.retained_menu_rows = QWidget(self)
-        self.retained_menu_rows.setObjectName("settingsRetainedMenuRows")
-        retained_menu_layout = QVBoxLayout(self.retained_menu_rows)
-        retained_menu_layout.setContentsMargins(0, 0, 0, 0)
-        for retained_menu_row in menu_rows:
-            retained_menu_layout.addWidget(retained_menu_row)
-        self.retained_menu_rows.setVisible(False)
+        # 快捷启动模块未激活也走 claim：防「待分类（开发期）」，控件与保存链原样保留；
+        # 但整个标签页不挂（模块关了，右键里根本没有「快捷启动」子菜单）。
+        launcher_rows = claim("quick_launch_apps")
+        if _fa.is_active("quick_launch"):
+            menu.addTab(
+                "launcher",
+                "快捷启动",
+                page_content([("已配置应用", launcher_rows)]),
+            )
+        menu.addTab(
+            "appearance",
+            "外观",
+            page_content(
+                [
+                    ("菜单外观", claim("menu_theme", "menu_density", "menu_radius", "menu_font",
+                                    "menu_font_size", "menu_translucent", "menu_opacity")),
+                    ("浅色主题", claim("light_background", "light_foreground", "light_hover")),
+                    ("深色主题", claim("dark_background", "dark_foreground", "dark_hover")),
+                    ("彩蛋入口", claim_prefix("egg_")),
+                ]
+            ),
+        )
         island_rows = settings_page_guide.rows_in_layout_order(old_pages.get("灵动岛", QWidget()))  # 布局顺序，不是创建顺序
         claimed.update(island_rows)
         # 网络延迟检测（高级）只能在**最终域装配处**拆：旧岛页整节会被摊平进同一个
@@ -2125,6 +2146,10 @@ class ModernSettingsDialog(QDialog):
                 "chat_memory_extract_interval",
                 "chat_memory_manage",
             )
+            # pet.chat 是可选扩展（no-chat 构建里整层不存在）：在 include_ai 分支里
+            # 延迟 import，顶层 import 会让纯桌宠构建在装配模块时就拉上 chat 包。
+            from .chat.model_settings_page import ChatModelPage
+
             ai_sections = page_content([ChatModelPage(self.config)])
             ai_sections.setObjectName("settingsDomain_ai")
             # 这些行必须留在域页的父链里（全局不变量：没有孤儿行、不掉「待分类」），
@@ -2263,9 +2288,6 @@ class ModernSettingsDialog(QDialog):
         from . import settings_features
 
         self._features_page = settings_features.build_content(self)
-        # 「菜单」域的隐藏容器必须先挂进一个域页的父链：全局不变量要求每行都落在
-        # 域页里（孤儿行会掉「待分类」），同时排除出搜索索引（上面那个名单）。
-        self.retained_menu_rows.setParent(self._features_page)
 
         # Preserve any newly added row until it receives an explicit domain decision.
         leftovers = [row for row in all_rows if row not in claimed and (self.ai_page is None or not self.ai_page.isAncestorOf(row))]
@@ -2279,7 +2301,9 @@ class ModernSettingsDialog(QDialog):
         domain_content = {
             "常规": general,
             "桌宠": pet,
+            "通用": common,
             "互动": interaction,
+            "菜单": menu,
             "桌面组件": desktop_components,
             "功能": self._features_page,
             "AI 与对话": ai_sections,
@@ -2304,10 +2328,8 @@ class ModernSettingsDialog(QDialog):
         # 「只挂模型设置」那一域把旧行收进了隐藏容器：它们仍算满归属（不变量、不
         # 掉「待分类」），但搜到了也看不见，所以不进搜索索引。
         retained_hosts = [
-            host for host in (
-                self.findChild(QWidget, "settingsRetainedRows"),
-                self.findChild(QWidget, "settingsRetainedMenuRows"),
-            ) if host is not None
+            host for host in (self.findChild(QWidget, "settingsRetainedRows"),)
+            if host is not None
         ]
         self._search_rows = [
             row for row in self.findChildren(SettingRow) + self.findChildren(AuthorRow)

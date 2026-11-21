@@ -641,7 +641,7 @@ def test_pet_app_assigns_distinct_offsets_to_spawned_pets(tmp_path, monkeypatch)
     app = QApplication.instance() or QApplication([])
     offsets = []
     monkeypatch.setattr(AppShell, "spawn_in_process_window",
-                        lambda self, index=1: offsets.append(index))
+                        lambda self, index=1, character_id=None: offsets.append(index))
     owner = AppShell(app, Config(tmp_path))
     owner.spawn_pet()
     owner.spawn_pet()
@@ -721,11 +721,11 @@ def test_modern_pet_context_menu_has_spawn_action_with_avatar_icon(monkeypatch):
     direct_actions = [action for action in menu.actions() if not action.isSeparator()]
     assert direct_actions
     controls = next(action.menu() for action in direct_actions if action.text() == "桌宠控制")
-    spawn_action = next(action for action in controls.actions() if action.text() == "生小肥鱼")
+    spawn_action = next(action for action in controls.actions() if action.text() == "再来一只")
     assert not spawn_action.icon().isNull()
     spawn_action.trigger()
     assert pet.spawn_count == 1
-    clear_action = next(action for action in controls.actions() if action.text() == "退出子肥鱼")
+    clear_action = next(action for action in controls.actions() if action.text() == "退出其他桌宠")
     assert not clear_action.icon().isNull()
     clear_action.trigger()
     assert pet.clear_count == 1
@@ -1219,7 +1219,8 @@ def test_modern_menu_starts_with_ojingjing_entry_and_uses_pet_avatar(monkeypatch
     assert entry.findChild(QWidget, "ojingjingAvatar") is not None
     assert entry.findChild(QWidget, "ojingjingClickAccessory") is not None
     controls = next(action.menu() for action in menu.actions() if action.text() == "桌宠控制")
-    spawn = next(action for action in controls.actions() if action.text() == "生小肥鱼")
+    spawn = next(action for action in controls.actions() if action.text() == "再来一只")
+    assert spawn.menu() is not None, "多角色时「再来一只」必须摊成选角色的子菜单"
     pixmap = spawn.icon().pixmap(18, 18)
     center = pixmap.toImage().pixelColor(pixmap.width() // 2, pixmap.height() // 2)
     assert center.blue() > center.red() + 80
@@ -1389,10 +1390,10 @@ def test_modern_settings_panel_uses_sidebar_and_includes_ai_settings(tmp_path, m
     assert isinstance(dialog.pages, QStackedWidget)
     # 2026-09-19 新增「文件识别」域（拖文件解读，settings_file_interpret）。
     # 2026-10-21 新增「功能」域（功能模块启用/停用卡片，settings_features）。
-    # 2026-11-18 「菜单」域整域下线（右键菜单固定用默认那套）：11 → 10 个侧栏域，
-    # 但菜单相关行仍构造（在 ``settingsRetainedMenuRows`` 隐藏容器里），下面的
-    # section 标题断言继续成立。
-    expected_pages = ["常规", "桌宠", "互动", "桌面组件", "功能", "AI 与对话", "自动化与联动", "语音", "文件识别", "更新"]
+    # 2026-11-18 「菜单」域曾整域下线，2026-11-19 恢复：默认布局隐藏的动作
+    # （播放动画 / 切换角色）只能靠它的「菜单编排」标签勾回来。
+    expected_pages = ["常规", "桌宠", "通用", "互动", "菜单", "功能", "AI 与对话",
+                      "自动化与联动", "语音", "文件识别", "更新"]
     assert [dialog.sidebar.item(i).text() for i in range(dialog.sidebar.count())] == expected_pages
     assert dialog.pages.count() == len(expected_pages)
     assert dialog.search_edit.placeholderText() == "搜索设置…"
@@ -1405,8 +1406,9 @@ def test_modern_settings_panel_uses_sidebar_and_includes_ai_settings(tmp_path, m
     assert {
         "应用启动", "窗口与系统", "动画与移动", "点击反馈", "自言自语",
         "显示",
-        # 2026-11-18「菜单」域整域下线，菜单外观/已配置应用/内容与布局这几个组
-        # 连同它们的域页一起消失（行仍在隐藏容器里，但组标题不在了）。
+        # 2026-11-19 「菜单」域恢复：编排树 / 菜单入口 / 快捷启动清单 / 外观偏好
+        # 四类组标题跟着回来。
+        "内容与布局", "菜单入口", "已配置应用", "菜单外观", "彩蛋入口",
         # 「语音」总域只收 TTS 类设置（2026-09-17 定稿口径）：语音报时 + 节日提醒。
         # 2026-10-14 起两页各自**自建卡片**交给本域（语音报时 = 基础设置/合成后端/
         # 语音/台词歌词，节日提醒 = 何时提醒/提醒哪些日子/怎么提醒/你的生日/少用项）：
@@ -2209,13 +2211,21 @@ def test_modern_animation_leaf_icons_are_loaded_only_when_category_opens(monkeyp
     from PySide6.QtWidgets import QApplication, QMenu
 
     from pet.context_menu import populate_context_menu
+    from pet.menu_layout import load_default_menu_layout
 
     class Config(dict):
         def get(self, key, default=None):
             return super().get(key, default)
 
+    # 默认菜单是精简版口袋菜单（「播放动画」/「切换角色」默认亮着，其余在设置→菜单里勾）——
+    # 本用例钉的是动画分类懒加载，不关心默认可见性，这里再置一次 True 与模板解耦。
+    layout = load_default_menu_layout()
+    for node in layout["nodes"]:
+        if node.get("id") in ("animations_hub", "character"):
+            node["visible"] = True
+
     class Pet:
-        cfg = Config(character="shenshen", on_top=False)
+        cfg = Config(character="shenshen", on_top=False, context_menu_layout=layout)
         on_open_chat = on_open_modern_settings = on_spawn_pet = None
         idles = ["idle-a"]
         turns = ["turn-a"]

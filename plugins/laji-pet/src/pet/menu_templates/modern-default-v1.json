@@ -10,8 +10,8 @@
     {"type": "action", "id": "look_screen", "visible": false, "section": "interaction"},
     {"type": "action", "id": "screen_capture", "visible": false, "section": "interaction"},
     {"type": "separator", "id": "default.separator-interaction", "visible": false},
-    {"type": "action", "id": "animations_hub", "visible": false, "section": "playback"},
-    {"type": "action", "id": "character", "visible": false, "section": "playback"},
+    {"type": "action", "id": "animations_hub", "visible": true, "section": "playback"},
+    {"type": "action", "id": "character", "visible": true, "section": "playback"},
     {"type": "action", "id": "playback_speed", "visible": false, "section": "playback"},
     {"type": "action", "id": "size", "visible": false, "section": "playback"},
     {"type": "submenu", "id": "music", "label": "音乐", "visible": false, "section": "playback", "children": [

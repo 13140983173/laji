@@ -86,9 +86,9 @@ MY_CHARACTERS_LINK = "桌宠/" + MY_CHARACTERS_PAGE_LABEL
 SETTINGS_DOMAIN_NAV = (
     ("常规", "settings"),
     ("桌宠", "pet"),
+    ("通用", "settings"),
     ("互动", "interaction"),
     ("菜单", "application"),
-    ("桌面组件", "island"),
     ("功能", "template"),
     ("AI 与对话", "chat"),
     ("自动化与联动", "automation"),
@@ -100,9 +100,12 @@ SETTINGS_DOMAIN_NAV = (
 #: 侧栏实际列出的域。「小口袋」右键进的是桌宠面板，不是整套宿主设置；
 #: 其余域仍会建页，也仍能被 ``select_page`` 与搜索深链跳到，只是不在导航里
 #: 出现（域名文案保持 ``SETTINGS_DOMAIN_NAV`` 的原样，深链按它匹配）。
-SIDEBAR_VISIBLE_DOMAINS = ("桌宠", "AI 与对话")
-#: 「菜单」域已整域下线（右键菜单固定用默认那套）：不再建页，行仍 claim 进
-#: ``settingsRetainedMenuRows`` 隐藏容器——全局不变量要求每行有归属。
+#: 「通用」是 2026-11-18 用户要求加的小口袋入口：桌宠大小那一行原本只在被隐藏的
+#: 「显示与音乐」标签里，没有任何可见入口。
+#: 「菜单」域 2026-11-18 曾整域下线（右键菜单固定用默认那套），2026-11-19 用户要求
+#: 放回来：默认布局隐藏了「播放动画 / 切换角色」等动作，而勾回它们的唯一入口就是
+#: 本域的「菜单编排」标签。
+SIDEBAR_VISIBLE_DOMAINS = ("桌宠", "通用", "菜单", "AI 与对话")
 
 BROWSER_CONTROL_STYLESHEET = """
 QLineEdit, QSpinBox, QDoubleSpinBox, QPlainTextEdit {
@@ -951,8 +954,11 @@ class BrowserDoubleSpinBox(QDoubleSpinBox):
 class SettingRow(QFrame):
     """A label and hint on the left, with one control aligned to the right."""
 
-    def __init__(self, key: str, title: str, hint: str, control: QWidget, parent=None, *, stacked: bool = False):
+    def __init__(self, key: str, title: str, hint: str, control: QWidget, parent=None, *, stacked: bool = False, default_tools: bool = True):
         super().__init__(parent)
+        # 该行是否参与「已修改 / 改回默认」这套呈现。关掉的行走即时生效语义，
+        # 没有「改了但还没保存」这种状态，标记与重置按钮只会误导（见 set_default_state）。
+        self._default_tools = default_tools
         self.setObjectName(f"settingRow_{key}")
         self.setFrameShape(QFrame.Shape.NoFrame)
         self.setProperty("stackedControl", stacked)
@@ -1116,10 +1122,14 @@ class SettingRow(QFrame):
         依赖隐藏不做可见性记账：标记与按钮各自 ``setVisible``，父行不可见时它们自然
         不呈现，父行重新显示后标记跟着回来（依赖行"改过没有"这件事一直记着）。
         """
-        modified = default_text is not None
+        resolved = default_text
+        if not self._default_tools:
+            resolved = None
+            can_reset = False
+        modified = resolved is not None
         base_hint = self.hint_label.text().split("默认：", 1)[0].rstrip("\n")
         self.hint_label.setText(
-            base_hint if not modified else f"{base_hint}\n默认：{default_text}"
+            base_hint if not modified else f"{base_hint}\n默认：{resolved}"
         )
         self.modified_mark.setVisible(modified)
         self.default_reset_button.setVisible(modified and can_reset)

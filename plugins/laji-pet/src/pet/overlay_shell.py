@@ -4807,9 +4807,9 @@ class OverlayShell(QObject):
         menu.addSeparator()
         add_tray_action(menu, "生成 / 恢复 slot0（档案损坏，见日志）"
                         if self.slot0_profile_diagnosis() and self.sprite is None
-                        else ("生成 / 恢复 slot0" if self.sprite is None else "生小肥鱼"),
+                        else ("生成 / 恢复 slot0" if self.sprite is None else "再来一只"),
                         self.spawn_pet)
-        add_tray_action(menu, "退出子肥鱼", self.clear_spawned_pets)
+        add_tray_action(menu, "退出其他桌宠", self.clear_spawned_pets)
         # tooltip 默认不显示（QMenu 的默认值），而这条关闭入口的 tooltip 正是
         # "档案还在、怎么弄回来"的说明，必须能看见。
         menu.setToolTipsVisible(True)
@@ -4842,7 +4842,7 @@ class OverlayShell(QObject):
                     "关闭这只桌宠：档案与位置保留，可用托盘「生成 / 恢复 slot0」再恢复；"
                     "不退出应用。"
                     if sprite is self.sprite else
-                    "关闭这只桌宠：它自己的档案保留，可用托盘「生小肥鱼」再生成；"
+                    "关闭这只桌宠：它自己的档案保留，可用托盘「再来一只」再生成；"
                     "不影响其它桌宠。")
         self._pet_visible_actions = visible_actions
         menu.addSeparator()
@@ -4921,12 +4921,15 @@ class OverlayShell(QObject):
                 continue  # 菜单已销毁（wrapper 失效）：跳过
 
     def _pet_entries(self) -> list:
-        """托盘逐只条目：(sprite, 标签)。主宠在前 = 活跃清单列表头口径。"""
-        entries = [(self.sprite, "主肥鱼 [slot-0]")] if self.sprite is not None else []
-        for sprite in self._spawned:
-            slot = self._spawned_slots.get(sprite)
-            label = f"小肥鱼 [slot-{slot}]" if slot is not None else "小肥鱼"
-            entries.append((sprite, label))
+        """托盘/右键逐只条目：(sprite, 标签)。主宠在前 = 活跃清单列表头口径。
+
+        标签用「主桌宠 / 桌宠1 / 桌宠2」而不是内部身份：``slot-N`` 是磁盘档案与
+        日志的坐标，对用户只是噪音（他会去数 slot-2 是不是第三只），编号按当前
+        活跃顺序重排，关掉一只后剩下的仍是从 1 起的连号。
+        """
+        entries = [(self.sprite, "主桌宠")] if self.sprite is not None else []
+        for index, sprite in enumerate(self._spawned, start=1):
+            entries.append((sprite, f"桌宠{index}"))
         return entries
 
     def _exit_pet_from_tray(self, sprite) -> None:
@@ -5889,7 +5892,7 @@ class OverlayShell(QObject):
 
         if slot == 0 and self.slot0_profile_diagnosis():
             return f"生成桌宠失败：{self.slot0_profile_diagnosis()}"
-        text = f"生成桌宠失败（slot-{slot}）：{exc}"
+        text = f"生成桌宠失败：{exc}"
         config_dir = self._spawn_config_dir()
         if config_dir:
             try:
@@ -5931,8 +5934,11 @@ class OverlayShell(QObject):
         except RuntimeError:                      # 窗口已随进程销毁
             logging.debug("overlay: 恢复窗诊断标签已失效", exc_info=True)
 
-    def spawn_pet(self) -> None:
-        """生小肥鱼（app.py spawn_pet 进程内路径语义 + D6 无锁身份分配）。
+    def spawn_pet(self, character_id: str | None = None) -> None:
+        """再来一只（app.py spawn_pet 进程内路径语义 + D6 无锁身份分配）。
+
+        ``character_id`` ＝ 右键菜单里点的角色：给了就以她建这只（并写进该槽
+        档案，重启复活也是她）；不传＝继承主配置的角色（旧行为）。
 
         分配 slot 身份 → 建 per-pet 库 + 新 sprite（自主宠向右逐级错开，重叠
         规避由 body 钳制兜底）→ 进活跃清单并落盘。无可用身份时冒泡告知（B01，
@@ -5952,15 +5958,18 @@ class OverlayShell(QObject):
             # B01：分配兜底后这条路径只剩「128 个身份全活跃」一种可能，但绝不
             # 能再只写日志——静默失败在用户眼里就是「点了没反应」。
             self.show_bubble(
-                f"生小肥鱼失败：位置身份已耗尽（1-{overlay_spawn_state.MAX_SCAN_SLOTS}"
+                f"再来一只失败：位置身份已耗尽（1-{overlay_spawn_state.MAX_SCAN_SLOTS}"
                 " 全部占用）", duration_ms=6000)
             return
         try:
+            self._spawn_character_override = str(character_id or "").strip() or None
             self._spawn_slot(slot)
         except Exception as exc:
-            logging.exception("overlay: 生小肥鱼失败 (slot=%s)", slot)
+            logging.exception("overlay: 再来一只失败 (slot=%s)", slot)
             self._notify_spawn_failed(slot, exc)
             return
+        finally:
+            self._spawn_character_override = None
         self._remembered_active.append(slot)
         self._slot_signature_cache = self._slot_config_signatures()
         if slot == 0:
@@ -6021,7 +6030,21 @@ class OverlayShell(QObject):
                             for key in pet_profiles.PER_PET_SETTING_KEYS}
                     if not self._config.get("spawn_inherit_size", True):
                         seed["scale"] = self._config.get("spawn_scale", catalog.DEFAULT_SCALE)
-                    result = pet_profiles.write_profile_settings(config_dir, slot, seed)
+                    override = getattr(self, "_spawn_character_override", None)
+                    if override:
+                        seed["character"] = override
+                    result = pet_profiles.write_profile_settings(
+                        config_dir, slot, seed,
+                        user_customized=True if override else None)
+                    if not result.ok:
+                        raise RuntimeError(f"slot-{slot}: {result}")
+                elif getattr(self, "_spawn_character_override", None):
+                    # 已有档案的槽（重启后重生 / 复用了前一只的位置）：菜单里点的
+                    # 角色是用户对这一只的明确指定，盖掉旧值并记为已自定义。
+                    result = pet_profiles.write_profile_settings(
+                        config_dir, slot,
+                        {"character": self._spawn_character_override},
+                        user_customized=True)
                     if not result.ok:
                         raise RuntimeError(f"slot-{slot}: {result}")
                 result = pet_profiles.begin_slot_generation(config_dir, slot)
@@ -6038,6 +6061,9 @@ class OverlayShell(QObject):
             slot_data = memory.setdefault(slot, {
                 key: copy.deepcopy(self._config.get(key, pet_profiles.same_source_default(key)))
                 for key in pet_profiles.PER_PET_SETTING_KEYS})
+            override = getattr(self, "_spawn_character_override", None)
+            if override:
+                slot_data["character"] = override
         reader = _SpriteConfig(self, None, snapshot=snapshot, data=slot_data)
         state = overlay_spawn_state._clean_geometry(slot_data)
         lib = self._create_sprite_library(reader._values, slot)

@@ -442,11 +442,11 @@ def test_overlay_tray_return_to_corner_waits_for_menu_close(tmp_path):
 
 
 @pytest.mark.parametrize("label,delta", [
-    ("生小肥鱼", +1),
-    ("退出子肥鱼", -1),
+    ("再来一只", +1),
+    ("退出其他桌宠", -1),
 ])
 def test_overlay_tray_pet_lifecycle_waits_for_menu_close(tmp_path, label, delta):
-    """overlay 托盘「生小肥鱼 / 退出子肥鱼」：生灭 sprite 与各自库，同样延迟派发。"""
+    """overlay 托盘「再来一只 / 退出其他桌宠」：生灭 sprite 与各自库，同样延迟派发。"""
     shell, menu = _overlay_tray(tmp_path)
     try:
         if delta < 0:
@@ -477,7 +477,7 @@ def test_overlay_tray_per_pet_submenu_waits_for_menu_close(tmp_path):
         shell.spawn_pet()
         first, second = shell._spawned[0], shell._spawned[1]
         menu = shell.tray.contextMenu()
-        sub = _submenu(menu, f"小肥鱼 [slot-{shell._spawned_slots[first]}]")
+        sub = _submenu(menu, f"桌宠{shell._spawned.index(first) + 1}")
         corner = _entry(sub, "回到左上角")
         show_this = _entry(sub, "显示这只")
         exit_this = _entry(sub, "退出这只")
@@ -531,7 +531,7 @@ def test_overlay_tray_submenu_entry_waits_for_the_whole_menu_tree(tmp_path):
         shell.spawn_pet()
         menu = shell.tray.contextMenu()          # 生灭会重建菜单，重取
         first = shell._spawned[0]
-        sub = _submenu(menu, f"小肥鱼 [slot-{shell._spawned_slots[first]}]")
+        sub = _submenu(menu, f"桌宠{shell._spawned.index(first) + 1}")
         corner = _entry(sub, "回到左上角")
         expected = shell._default_corner_pos(shell._bounds, first.rect())
         first.set_pos(QPointF(0, 0))

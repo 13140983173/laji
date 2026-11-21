@@ -76,7 +76,7 @@ ACTION_LABELS = {
     "size": "大小", "drag_physics": "拖动物理", "no_move": "不移动",
     "on_top": "窗口置顶", "autostart": "开机自启",
     "return_corner": "回到左上角", "hide_pet": "隐藏桌宠",
-    "spawn_pet": "生小肥鱼", "clear_spawned_pets": "退出子肥鱼",
+    "spawn_pet": "再来一只", "clear_spawned_pets": "退出其他桌宠",
     "golden_spin": "黄金回旋", "edge_probe": "边缘探头",
     "music": "音乐", "music_pause": "暂停 / 播放", "music_next": "切歌",
     "music_prev": "上一首",

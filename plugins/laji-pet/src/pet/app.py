@@ -3820,7 +3820,7 @@ class AppShell:
     def _sync_dynamic_island(self) -> None:
         """按配置创建/隐藏灵动岛；桌宠隐藏后灵动岛仍可常驻。"""
         island_cfg = self.config.get("dynamic_island", {})
-        enabled = bool(island_cfg.get("enabled", True)) if isinstance(island_cfg, dict) else False
+        enabled = bool(island_cfg.get("enabled", False)) if isinstance(island_cfg, dict) else False
         if not feature_activation_mod.is_active("dynamic_island"):
             # 功能模块未激活 = 岛**不创建**（下面的 hide 分支只停定时器，岛对象、
             # 四路采样槽与 FPS 订阅都还留着，那条路径不算停用）。岛自己的
@@ -4591,9 +4591,13 @@ class AppShell:
 
         threading.Thread(target=worker, daemon=True, name="pet-update-check").start()
 
-    # ------------------------------------------------------------ 生小肥鱼 / 多窗
-    def spawn_pet(self) -> None:
-        """生小肥鱼：统一走进程内新窗，不再拉起独立桌宠进程。
+    # ------------------------------------------------------------ 再来一只 / 多窗
+    def spawn_pet(self, character_id: str | None = None) -> None:
+        """再来一只：统一走进程内新窗，不再拉起独立桌宠进程。
+
+        ``character_id`` 是右键菜单里点的角色：给了就以她生成这只，不传 = 跟
+        主宠当前角色一样（旧行为）。参数容忍 ``QAction.triggered`` 塞进来的
+        非字符串（不传就是 None），非字符串一律当没传。
 
         4.4b：多进程多宠退役层删除后，多宠的唯一形态是进程内多窗/多 sprite。
         ``--slot`` / ``DSH_PET_SPAWN_OFFSET_INDEX`` 兼容解析保留（T5），
@@ -4637,17 +4641,18 @@ class AppShell:
             if win is not None:
                 win.show_bubble("直播捕获兼容模式仅主宠物", duration_ms=4000)
             return
+        requested = character_id.strip() if isinstance(character_id, str) else None
         overlay = getattr(self, "_overlay_shell", None)
         if overlay is not None:
-            overlay.spawn_pet()
+            overlay.spawn_pet(requested)
             return
         try:
             self._spawned_pet_count += 1
-            self.spawn_in_process_window(self._spawned_pet_count)
+            self.spawn_in_process_window(self._spawned_pet_count, character_id=requested)
         except Exception as exc:
             self._spawned_pet_count = max(0, self._spawned_pet_count - 1)
             logging.exception('进程内生成小肥鱼失败')
-            _show_startup_error('生小肥鱼失败', str(exc))
+            _show_startup_error('再来一只失败', str(exc))
 
     def clear_spawned_pets(self) -> None:
         """右键菜单快捷入口：一键静默退出所有小肥鱼（设置与数据保留）。
@@ -4701,7 +4706,8 @@ class AppShell:
         QTimer.singleShot(
             0, lambda: self._clear_spawned_chain(refs, index + 1))
 
-    def spawn_in_process_window(self, offset_index: int = 1) -> PetInstance:
+    def spawn_in_process_window(self, offset_index: int = 1,
+                               character_id: str | None = None) -> PetInstance:
         """进程内创建第二个 PetInstance（不共享库/Config/SessionStore）。
 
         - 新 slot 身份：4.4a 起走 **D6 无锁分配器**（``overlay_spawn_state.
@@ -4710,11 +4716,14 @@ class AppShell:
         - 独立 Config(instance_id=slot-N)，显式传 instance_id（不再依赖进程级
           DSH_PET_INSTANCE），独立 MovieLibrary / PetWindow / SessionStore 目录；
         - 碰撞不再经 QLocal 回环：多宠碰撞归 overlay 拓扑的 sprite 世界；
-          legacy 的多窗是渲染面（捕获模式收窄），窗间不做跨进程冲量交换。
+          legacy 的多窗是渲染面（捕获模式收窄），窗间不做跨进程冲量交换；
+        - ``character_id`` 是右键菜单选的角色：新 slot 就以她落种（并记
+          ``user_customized``，主设置日后的刷新不再把她改回主宠角色）；
+          不传 = 按主设置落种（旧行为）。
         """
         overlay = getattr(self, "_overlay_shell", None)
         if overlay is not None:
-            overlay.spawn_pet()
+            overlay.spawn_pet(character_id)
             return self.instance
         from .overlay_shell import is_overlay_topology
 
@@ -4738,10 +4747,21 @@ class AppShell:
             from .config import normalize_pet_profile_snapshot
 
             source = normalize_pet_profile_snapshot(pet_profiles.read_slot_profile(config_dir, 0).data)
-            seeded = pet_profiles.write_profile_settings(config_dir, slot_id,
-                {key: source[key] for key in pet_profiles.PER_PET_SETTING_KEYS})
+            seed = {key: source[key] for key in pet_profiles.PER_PET_SETTING_KEYS}
+            if character_id:
+                seed['character'] = character_id
+            seeded = pet_profiles.write_profile_settings(
+                config_dir, slot_id, seed,
+                user_customized=True if character_id else None)
             if not seeded.ok:
                 raise RuntimeError(str(seeded))
+        elif character_id:
+            # slot 已有档案：菜单里点的角色是用户对这一只的明确指定，盖掉旧值。
+            written = pet_profiles.write_profile_settings(
+                config_dir, slot_id, {'character': character_id},
+                user_customized=True)
+            if not written.ok:
+                raise RuntimeError(str(written))
         # 复用主窗同一配置根目录（AppShell.config.dir 的父目录），使所有窗的
         # config-slot-N.json / sessions-slot-N 落在同一 APP_DIR_NAME 下，仅按
         # instance_id 区分；显式传 instance_id，不再依赖进程级 DSH_PET_INSTANCE。
@@ -5460,12 +5480,19 @@ class AppShell:
         # 替代 spike 的平铺菜单项；图标仍单托盘，逐窗动作经子菜单路由。
         if len(self.instances) > 1:
             menu.addSeparator()
+            spawned_index = 0
             for inst in self.instances:
                 win_i = inst.win
                 if win_i is None:
                     continue
-                slot_label = f"[slot-{inst.slot_id}]" if inst.slot_id is not None else ""
-                sub = track_menu(menu.addMenu(f'桌宠 {slot_label}' if slot_label else '桌宠'))
+                # 用户只看得到「主桌宠 / 桌宠1 / 桌宠2」：slot 号是磁盘档案坐标，
+                # 编号按当前活跃顺序重排（关掉一只后剩下的仍从 1 起连号）。
+                if inst.slot_id in (None, 0):
+                    label = '主桌宠'
+                else:
+                    spawned_index += 1
+                    label = f'桌宠{spawned_index}'
+                sub = track_menu(menu.addMenu(label))
 
                 def _toggle(win=win_i) -> None:
                     if win.isVisible():

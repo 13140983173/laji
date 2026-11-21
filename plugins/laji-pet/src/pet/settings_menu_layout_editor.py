@@ -378,6 +378,10 @@ class MenuLayoutEditor(QWidget):
             "label": node.get("label"),
             "alias": alias,
             "icon": node.get("icon") if "icon" in node else None,
+            # 分割线没有勾选框：它能不能显示只能跟着默认布局走（默认菜单是
+            # 精简版口袋菜单，两侧分组都隐藏的空行也要一起隐藏），所以把这
+            # 个值存在节点里原样带回 value()，而不是凭空当 True。
+            "visible": bool(node.get("visible", True)),
         })
         blocked_reason = self.blocked_actions.get(node_id, "") if node_type == "action" else ""
         available = node_type != "action" or (
@@ -436,8 +440,11 @@ class MenuLayoutEditor(QWidget):
             node = {
                 "type": node_type,
                 "id": data.get("id"),
-                "visible": True if node_type == "separator" else item.checkState(0) == Qt.CheckState.Checked,
             }
+            if node_type == "separator":
+                node["visible"] = bool(data.get("visible", True))
+            else:
+                node["visible"] = item.checkState(0) == Qt.CheckState.Checked
             if data.get("section"):
                 node["section"] = data["section"]
             if data.get("alias"):
@@ -541,6 +548,7 @@ class MenuLayoutEditor(QWidget):
             "type": node_type, "id": node_id, "section": node.get("section"),
             "label": node.get("label"), "alias": alias,
             "icon": node.get("icon") if "icon" in node else None,
+            "visible": bool(node.get("visible", True)),
         })
         item.setData(0, Qt.ItemDataRole.UserRole + 1, True)
         item.setData(0, Qt.ItemDataRole.UserRole + 2, True)

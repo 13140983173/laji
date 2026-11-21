@@ -322,7 +322,7 @@ def test_capture_mode_refuses_manual_spawn(tmp_path, monkeypatch):
         prepare=lambda cfg: cfg.set("stream_capture_mode", True))
     spawned: list[int] = []
     monkeypatch.setattr(AppShell, "spawn_in_process_window",
-                        lambda self, index=1: spawned.append(index))
+                        lambda self, index=1, character_id=None: spawned.append(index))
     try:
         assert cmd_mod.is_overlay_topology() is False, "用例前置：捕获模式已生效"
         shell.instance._wire_window(win)
@@ -341,11 +341,13 @@ def test_overlay_topology_still_spawns_on_menu_action(tmp_path, monkeypatch):
     monkeypatch.setattr(overlay_shell_mod, "OverlayShell", _StubOverlayShell)
     win = _RecorderWin()
     shell = _start_shell(tmp_path, monkeypatch, topology="overlay", win=win)
-    spawned: list[int] = []
-    shell._overlay_shell.spawn_pet = lambda: spawned.append(1)
+    spawned: list = []
+    shell._overlay_shell.spawn_pet = lambda character_id=None: spawned.append(character_id)
     shell.instance._wire_window(win)
     win.on_spawn_pet()
-    assert spawned == [1]
+    # 菜单传的角色要原样落到 overlay 的 spawn 上（不再只是个无参回调）
+    win.on_spawn_pet("catgirl-gemini")
+    assert spawned == [None, "catgirl-gemini"]
     assert win.bubbles == []
 
 

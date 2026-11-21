@@ -729,8 +729,9 @@ class SpriteMenuFacade:
         self.cfg.set_character_alias(cid, name)
         self._bubble(f"角色名：{self.cfg.character_display_name(cid)}")
 
-    def on_spawn_pet(self) -> None:
-        self._shell.spawn_pet()
+    def on_spawn_pet(self, character_id: str | None = None) -> None:
+        """「再来一只」：不传角色 = 跟主宠一样，传了就以该角色生成。"""
+        self._shell.spawn_pet(character_id)
 
     def on_clear_spawned_pets(self) -> None:
         self._shell.clear_spawned_pets()

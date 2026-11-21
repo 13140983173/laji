@@ -12,12 +12,14 @@ def test_modern_default_v1_ships_the_compact_pocket_menu():
 
     assert layout["schema_version"] == 1
     assert layout["layout_id"] == "modern-default-v1"
-    # 节点树保留全部动作（设置页「菜单」编排可随时勾回来），默认只开四项。
+    # 节点树保留全部动作（设置页「菜单」编排可随时增删），默认亮七项。
     visible = [node for node in layout["nodes"] if node.get("visible", True)]
     assert [node["id"] for node in visible] == [
         "quick_chat",
         "work_station",
         "work_for_laji",
+        "animations_hub",
+        "character",
         "modern_settings",
         "quit",
     ]
@@ -77,6 +79,8 @@ def test_modern_default_v1_ships_the_compact_pocket_menu():
         ("quick_chat", None),
         ("work_station", None),
         ("work_for_laji", None),
+        ("animations_hub", None),
+        ("character", None),
         ("modern_settings", "小口袋"),
         ("quit", None),
     ]
@@ -632,8 +636,8 @@ def test_default_layout_populates_real_qmenu_hierarchy(monkeypatch):
         "开机自启",
         "回到左上角",
         "隐藏桌宠",
-        "生小肥鱼",
-        "退出子肥鱼",
+        "再来一只",
+        "退出其他桌宠",
         "显示本轮消费",
         "黄金回旋",
         "边缘探头",
@@ -700,7 +704,7 @@ def test_settings_menu_editor_commits_visibility_draft(tmp_path, monkeypatch):
     dialog = ModernSettingsDialog(config, include_ai=False)
 
     sidebar_labels = [dialog.sidebar.item(i).text() for i in range(dialog.sidebar.count())]
-    assert "菜单" not in sidebar_labels  # 2026-11-18：整域下线，编辑器仍在对话框上
+    assert "菜单" in sidebar_labels  # 2026-11-19 恢复：编排入口重新可见
     chat_item = dialog.menu_layout_editor.item_for_action("chat")
     assert chat_item is not None
     chat_item.setCheckState(0, Qt.CheckState.Unchecked)
@@ -1343,43 +1347,46 @@ def test_sound_and_festival_search_jump_to_owning_domains(tmp_path, monkeypatch)
         app.processEvents()
 
 
-def test_menu_domain_is_retired_from_settings(tmp_path, monkeypatch):
-    """「菜单」域 2026-11-18 整域下线：右键菜单固定用默认那套，设置里不再有它。
+def test_menu_domain_is_back_in_the_sidebar(tmp_path, monkeypatch):
+    """「菜单」域 2026-11-19 恢复：默认布局默认隐藏的动作要靠「菜单编排」勾回来。
 
-    行仍 claim 在 ``settingsRetainedMenuRows`` 隐藏容器里（不变量：每行有归属），
-    编辑器与保存链照旧可用；但侧栏无此项、无页内标签、搜索也搜不到。
+    2026-11-18 曾整域下线（右键菜单固定用默认那套），副作用是连用户**唯一**能
+    把``animations_hub`` / ``character`` 勾回来的入口一起封了——默认模板把它们
+    写成 ``visible: false``。恢复后侧栏重新列出该域，域内按 编排 / 快捷启动 /
+    外观 三个页内标签分工，行重新挂在页上（不再是隐藏容器里的孤儿）。
     """
     from PySide6.QtWidgets import QApplication
 
     from pet import modern_settings_dialog as settings_mod
     from pet.config import Config
     from pet.modern_settings_dialog import ModernSettingsDialog, SettingRow, SettingsTabContainer
-    from pet.settings_widgets import SETTINGS_DOMAIN_NAV
+    from pet.settings_widgets import SETTINGS_DOMAIN_NAV, SIDEBAR_VISIBLE_DOMAINS
 
     app = QApplication.instance() or QApplication([])
     monkeypatch.setattr(settings_mod.autostart_mod, "is_enabled", lambda: False)
     dialog = ModernSettingsDialog(Config(tmp_path), include_ai=True)
     try:
-        expected_sidebar = ["常规", "桌宠", "互动", "桌面组件", "功能",
-                            "AI 与对话", "自动化与联动", "语音", "文件识别", "更新"]
-        assert [dialog.sidebar.item(i).text() for i in range(dialog.sidebar.count())] == expected_sidebar
-        assert len({dialog.pages.widget(i) for i in range(dialog.pages.count())}) == len(SETTINGS_DOMAIN_NAV) - 1
-        # 没有任何域页带着菜单的三个页内标签
-        for index in range(dialog.pages.count()):
-            tabs = dialog.pages.widget(index).findChild(SettingsTabContainer, "settingsTaskTabs")
-            if tabs is not None:
-                assert "layout" not in tabs.keys() and "appearance" not in tabs.keys()
+        assert "菜单" in SIDEBAR_VISIBLE_DOMAINS
+        labels = [dialog.sidebar.item(i).text() for i in range(dialog.sidebar.count())]
+        assert labels == [name for name, _icon in SETTINGS_DOMAIN_NAV]
+        assert dialog.pages.count() == len(SETTINGS_DOMAIN_NAV)
 
-        # 行还在（不变量），但不出现在视觉层
-        for key in ("context_menu_layout", "quick_launch_apps", "menu_theme"):
+        assert dialog.select_page("菜单") is True
+        menu_page = dialog.pages.currentWidget()
+        tabs = menu_page.findChild(SettingsTabContainer, "settingsTaskTabs")
+        assert tabs is not None
+        assert "layout" in tabs.keys() and "appearance" in tabs.keys()
+
+        # 行重新挂在域页上（藏起来行不再算"已放出来"）
+        for key in ("context_menu_layout", "menu_theme", "light_background"):
             row = dialog.findChild(SettingRow, f"settingRow_{key}")
             assert row is not None, key
-            assert not row.isVisibleTo(dialog), key
+            assert menu_page.isAncestorOf(row), key
 
-        # 搜索不再指向一个不存在的域
+        # 搜索又能把用户带进这个域
         dialog.search_edit.setText("应用快捷启动")
         app.processEvents()
-        assert dialog.sidebar.currentItem().text() != "菜单"
+        assert dialog.sidebar.currentItem().text() == "菜单"
     finally:
         dialog.reject()
         app.processEvents()
@@ -1809,6 +1816,7 @@ def test_settings_domains_use_semantic_sidebar_icons():
     assert SETTINGS_DOMAIN_NAV == (
         ("常规", "settings"),
         ("桌宠", "pet"),
+        ("通用", "settings"),
         ("互动", "interaction"),
         ("菜单", "application"),
         ("桌面组件", "island"),
@@ -2171,8 +2179,8 @@ def test_non_windows_settings_does_not_create_orphan_windows_control(tmp_path, m
 def test_compact_menu_editor_action_bar_fits_narrow_scroll_viewport():
     """窄滚动视口里（设置页原来那层壳）工具栏按钮不越界、不出左边。
 
-    「菜单」域 2026-11-18 整域下线后，编辑器改为直接放进一个同样的 QScrollArea
-    里量：判据跟以前一样——按钮左右都在视口内。
+    「菜单」域 2026-11-19 重新挂回设置页，但编辑器仍单独放进一个同样的
+    QScrollArea 里量：判据跟以前一样——按钮左右都在视口内。
     """
     from PySide6.QtCore import QPoint
     from PySide6.QtWidgets import QApplication, QScrollArea

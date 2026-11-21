@@ -53,7 +53,7 @@ def test_tray_close_of_the_only_pet_keeps_process_tray_and_services(tmp_path, mo
         assert shell.sprite is not None, '前提：单宠（slot0）在'
         menu = shell.tray.contextMenu()
         sub = next(a.menu() for a in menu.actions()
-                   if a.text() == '主肥鱼 [slot-0]')
+                   if a.text() == '主桌宠')
         action = next(a for a in sub.actions() if a.text() == '退出这只')
         action.trigger()
 

@@ -181,8 +181,8 @@ def test_menu_has_spawn_entries(tmp_path):
     try:
         menu = build_sprite_full_menu(shell)
         labels = _recursive_labels(menu)
-        assert "生小肥鱼" in labels
-        assert "退出子肥鱼" in labels
+        assert "再来一只" in labels
+        assert "退出其他桌宠" in labels
     finally:
         shell._delete_runtime_marker()
 
@@ -262,7 +262,7 @@ def test_spawn_exhausted_identities_reports_bubble(tmp_path, monkeypatch):
         assert shell._spawned == []                       # 不留半只 sprite
         assert shell.overlay.sprites == [shell.sprite]
         assert len(said) == 1, "耗尽路径必须走壳上气泡通道告知用户"
-        assert "生小肥鱼失败" in said[0] and "128" in said[0]
+        assert "再来一只失败" in said[0] and "128" in said[0]
     finally:
         shell._delete_runtime_marker()
 

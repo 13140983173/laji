@@ -29,7 +29,7 @@ from tests.test_overlay_spawn import _center_ratios, _make_persistent_shell
 
 app = QApplication.instance() or QApplication([])
 
-MAIN_LABEL = "主肥鱼 [slot-0]"
+MAIN_LABEL = "主桌宠"
 
 
 def _tray_menu(shell):
@@ -173,10 +173,10 @@ def test_single_pet_close_entry_tooltip_differs_from_child_copy(tmp_path):
             _submenus(_tray_menu(shell))[MAIN_LABEL], "退出这只").toolTip()
         shell.spawn_pet()
         child = shell._spawned[0]
-        sub = _submenus(_tray_menu(shell))[f"小肥鱼 [slot-{shell._spawned_slots[child]}]"]
+        sub = _submenus(_tray_menu(shell))[f"桌宠{shell._spawned.index(child) + 1}"]
         child_tip = _action(sub, "退出这只").toolTip()
         assert main_tip and child_tip and main_tip != child_tip
         assert "生成 / 恢复 slot0" in main_tip
-        assert "生小肥鱼" in child_tip
+        assert "再来一只" in child_tip
     finally:
         _teardown(shell)

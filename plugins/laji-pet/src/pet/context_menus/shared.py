@@ -980,28 +980,79 @@ def add_autostart(menu: QMenu, pet=None, *, icons: bool = True):
     return action
 
 
+#: 「再来一只」的菜单文案（旧名「生小肥鱼」只留在历史文档里）。
+SPAWN_PET_LABEL = "再来一只"
+#: 二级菜单里"不挑角色"那一项：沿用主宠当前的角色。
+SPAWN_PET_INHERIT_LABEL = "跟当前一样"
+
+
+def _spawn_character_choices(pet) -> list[str]:
+    """「再来一只」可点的角色：桌宠认得、素材能加载的全部角色。"""
+    try:
+        return [str(cid) for cid in catalog.list_available_characters()]
+    except Exception:       # noqa: BLE001 - 清单读不出来就退化成单项，不砸右键菜单
+        logging.debug("再来一只：角色清单读取失败", exc_info=True)
+        return []
+
+
+def _spawn_character_label(pet, character_id: str) -> str:
+    """角色在"再来一只"里的显示名：别名 > 唤名/清单名 > 目录 id。
+
+    与「切换角色」不同，这里认 ``character_call_name``：内置 ``shenshen`` 的
+    清单名就是 id，用户认的名字是「大肥鱼」（历史唤名表），点一只鱼却写
+    "shenshen" 等于让用户拿英文 id 抽奖。
+    """
+    alias_fn = getattr(getattr(pet, "cfg", None), "character_alias", None)
+    alias = alias_fn(character_id) if callable(alias_fn) else ""
+    if alias:
+        return alias
+    return catalog.character_call_name(character_id)
+
+
 def add_spawn_pet(menu: QMenu, pet):
+    """「再来一只」：生成一只新桌宠，并能挑她用什么角色。
+
+    只有一个角色可选（内置素材不全 / 角色清单读不到）时保持单项动作，
+    右键菜单每多一层就要多挪一次鼠标——没得选就不值得分两层。
+    子项回调按 ``on_spawn_pet(character_id)`` 约定传角色；无参实现（旧接线、
+    测试假体）只走"跟当前一样"这一项。
+    """
     callback = getattr(pet, "on_spawn_pet", None)
     if callback is None:
         return None
-    if str(menu.property("menuStyle") or "") == "modern":
-        icon = pet_avatar_menu_icon(menu, pet)
-    else:
-        icon = QIcon()
-    action = menu.addAction(icon, "生小肥鱼")
-    action.setProperty("closeOnTrigger", True)
-    connect_action(action, callback)
-    return action
+    modern = str(menu.property("menuStyle") or "") == "modern"
+    choices = _spawn_character_choices(pet)
+    if len(choices) < 2:
+        icon = pet_avatar_menu_icon(menu, pet) if modern else QIcon()
+        action = menu.addAction(icon, SPAWN_PET_LABEL)
+        action.setProperty("closeOnTrigger", True)
+        connect_action(action, callback)
+        return action
+    submenu = add_submenu(menu, SPAWN_PET_LABEL)
+    if modern:
+        submenu.setIcon(pet_avatar_menu_icon(menu, pet))
+    add_action(
+        submenu, SPAWN_PET_INHERIT_LABEL, None, callback, close_on_trigger=True)
+    submenu.addSeparator()
+    for character_id in choices:
+        add_action(
+            submenu,
+            _spawn_character_label(pet, character_id),
+            None,
+            lambda cid=character_id: callback(cid),
+            close_on_trigger=True,
+        )
+    return submenu
 
 
 def add_clear_spawned_pets(menu: QMenu, pet, *, icons: bool = True):
-    """右键菜单快捷入口：退出所有小肥鱼（slot-N），设置与数据保留。"""
+    """右键菜单快捷入口：退出所有其他桌宠（不删档，设置与数据保留）。"""
     callback = getattr(pet, "on_clear_spawned_pets", None)
     if callback is None:
         return None
     return add_action(
         menu,
-        "退出子肥鱼",
+        "退出其他桌宠",
         "clear" if icons else None,
         callback,
         close_on_trigger=True,
